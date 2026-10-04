@@ -15,8 +15,6 @@ import {
   Sparkles,
   ExternalLink,
   ChevronRight,
-  TrendingUp,
-  Award,
   Layers
 } from 'lucide-react';
 import { 
@@ -60,12 +58,11 @@ export function FinalPackageView({
   const assets = [
     {
       id: 'miro-workspace',
-      name: 'Miro Board Pitch Workspace',
+      name: 'Miro Board Workspace',
       desc: 'Dedicated 🚀 PitchForge AI Pitch frame with sticky notes, architecture & Q&A',
       icon: Layers,
-      color: 'text-amber-400',
       tab: 'miro',
-      status: 'Ready to Sync',
+      status: 'READY TO SYNC',
       isMiroAction: true,
     },
     {
@@ -73,70 +70,57 @@ export function FinalPackageView({
       name: 'Pitch Deck (PPTX)',
       desc: `${deck?.slides.length || 10} slides formatted in 16:9 with speaker notes & visuals`,
       icon: Presentation,
-      color: 'text-indigo-400',
       tab: 'presentation',
-      status: 'Ready',
+      status: '10 SLIDES READY',
     },
     {
       id: 'summary',
       name: 'Executive Summary',
       desc: '1-page investor and hackathon briefing ready for distribution',
       icon: FileText,
-      color: 'text-emerald-400',
       tab: 'overview',
-      status: 'Ready',
+      status: 'VERIFIED',
     },
     {
       id: 'script',
       name: 'Speaker Script',
       desc: 'Slide-by-slide teleprompter script with cadence & pause timings',
       icon: Mic2,
-      color: 'text-cyan-400',
       tab: 'script',
-      status: 'Ready',
+      status: 'COACHED',
     },
     {
       id: 'audio',
-      name: 'Audio Pitch Narration',
+      name: 'Audio Narration',
       desc: 'Synthesized voiceover matching exact slide timecodes',
       icon: Volume2,
-      color: 'text-pink-400',
       tab: 'audio',
-      status: 'Ready',
+      status: 'SYNCHRONIZED',
     },
     {
       id: 'judge',
-      name: 'Judge Q&A Defense',
+      name: 'Judge Defense Q&A',
       desc: `${judgeQuestions.length || 10} skeptical questions across 10 evaluation categories`,
       icon: ShieldAlert,
-      color: 'text-purple-400',
       tab: 'judge',
-      status: 'Ready',
+      status: 'ARMED',
     },
     {
       id: 'attack',
-      name: 'Pitch Attack Report',
+      name: 'Pitch Attack Audit',
       desc: 'Audit of weak assumptions with armed spoken counter-defenses',
       icon: Flame,
-      color: 'text-rose-400',
       tab: 'attack',
-      status: 'Hardened',
+      status: 'HARDENED',
     },
     {
       id: 'video',
-      name: '1080p Video Timeline',
+      name: 'Video Timeline',
       desc: 'Multi-track composition syncing slides, audio, and subtitles',
       icon: Video,
-      color: 'text-amber-400',
       tab: 'video',
-      status: 'Ready',
+      status: 'COMPOSED',
     },
-  ];
-
-  const recommendations = [
-    'Add evidence for market size before approaching financial investors.',
-    'Reiterate the automated clarification loop when answering questions about Copilot.',
-    'Highlight the 85% confidence safety fallback during technical Q&A.',
   ];
 
   const handleDownloadCompleteBundle = async () => {
@@ -162,144 +146,101 @@ export function FinalPackageView({
   };
 
   return (
-    <div className="space-y-6">
-      {/* Hero Completion Card */}
-      <div className="glass-panel p-8 rounded-3xl bg-gradient-to-br from-indigo-950/70 via-slate-900 to-emerald-950/40 border border-indigo-500/40 shadow-2xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+    <div className="space-y-8 max-w-7xl mx-auto px-2 sm:px-0">
+      {/* Hero Completion Studio Banner */}
+      <div className="studio-panel p-6 sm:p-10 rounded-xs border border-white/[0.08] shadow-card bg-grid-editorial relative overflow-hidden flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#FF6A00] via-[#FF4D00] to-transparent" />
+
         <div className="space-y-2">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-wider">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Complete Pitch Package Formed</span>
+          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-xs bg-[#FF4D00]/15 border border-[#FF4D00]/30 text-[#FF6A00] text-[10px] font-mono font-bold uppercase tracking-widest">
+            <CheckCircle2 className="w-3.5 h-3.5 text-[#FF4D00]" />
+            <span>PITCH PACKAGE SYNTHESIS COMPLETE</span>
           </div>
 
-          <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-            Your Pitch Package is Ready
+          <h1 className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tight font-sans">
+            YOUR PITCH PACKAGE IS ARMED
           </h1>
 
-          <p className="text-sm text-slate-300 max-w-xl">
-            From raw Miro sticky notes and problem statement to presentation slides, speaker coach script, and battle-tested judge defenses.
+          <p className="text-xs sm:text-sm text-zinc-400 max-w-xl font-normal leading-relaxed">
+            From raw Miro board ideation to 10-slide deck, speaker teleprompter, and battle-tested hostile judge defense.
           </p>
         </div>
 
-        {/* Readiness Score Card */}
-        <div className="p-5 rounded-2xl bg-black/60 border border-emerald-500/40 flex items-center space-x-5 shrink-0 shadow-xl">
-          <div>
-            <span className="text-[10px] uppercase font-bold text-emerald-400 tracking-wider block">
-              FINAL READINESS
-            </span>
-            <div className="flex items-baseline space-x-1.5 mt-0.5">
-              <span className="text-4xl font-black text-white font-mono">
-                {readinessScore}
-              </span>
-              <span className="text-sm font-semibold text-emerald-400">/ 100</span>
-            </div>
-            <span className="text-[11px] font-semibold text-emerald-300 flex items-center mt-1">
-              <TrendingUp className="w-3 h-3 mr-1" />
-              You are ready to present.
-            </span>
-          </div>
-
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-bold shadow-md">
-            <Award className="w-6 h-6 text-slate-950" />
-          </div>
-        </div>
-      </div>
-
-      {/* 3 Recommendations Before Presenting */}
-      <div className="p-6 rounded-2xl bg-slate-900/90 border border-amber-500/30 space-y-3">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center space-x-2">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>3 Critical Recommendations Before Facing Judges</span>
-        </h3>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
-          {recommendations.map((rec, idx) => (
-            <div
-              key={idx}
-              className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 text-xs text-slate-200 flex items-start space-x-2.5"
-            >
-              <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 font-mono text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
-                {idx + 1}
-              </span>
-              <span className="leading-relaxed">{rec}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Package Assets Checklist Grid */}
-      <div className="space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs pb-2 border-b border-slate-800 gap-2">
-          <span className="font-bold text-white uppercase tracking-wider">
-            Generated Pitch Assets
-          </span>
-          <div className="flex items-center space-x-2">
-            {onSendToMiro && (
-              <button
-                onClick={onSendToMiro}
-                className="text-xs font-bold text-slate-950 bg-[#FFD02F] hover:bg-[#F2C425] px-3.5 py-1.5 rounded-lg flex items-center space-x-1.5 shadow-md shadow-amber-500/20 transition-all hover:scale-[1.02]"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-950" />
-                <span>Send Pitch to Miro</span>
-              </button>
-            )}
+        <div className="flex items-center space-x-3 shrink-0 flex-wrap gap-2">
+          {onSendToMiro && (
             <button
-              onClick={handleDownloadCompleteBundle}
-              disabled={isDownloadingBundle}
-              className="text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 px-3.5 py-1.5 rounded-lg flex items-center space-x-1.5 shadow-md shadow-indigo-600/30 transition-all disabled:opacity-50"
+              onClick={onSendToMiro}
+              className="btn-flame px-5 py-3 rounded-xs text-xs font-mono font-extrabold flex items-center space-x-2"
             >
-              <Download className="w-3.5 h-3.5" />
-              <span>{isDownloadingBundle ? 'Exporting Bundle...' : 'Download Complete Bundle (PPTX + MD)'}</span>
+              <span>✦ WRITE PITCH TO MIRO</span>
+              <ExternalLink className="w-3.5 h-3.5" />
             </button>
-          </div>
+          )}
+
+          <button
+            onClick={handleDownloadCompleteBundle}
+            disabled={isDownloadingBundle}
+            className="px-4 py-3 rounded-xs text-xs font-mono font-bold text-white bg-[#141414] hover:bg-[#1C1C1C] border border-white/[0.1] flex items-center space-x-2 transition-all disabled:opacity-50"
+          >
+            <Download className="w-3.5 h-3.5 text-zinc-400" />
+            <span>{isDownloadingBundle ? 'PACKAGING...' : 'DOWNLOAD BUNDLE'}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* 8 Deliverable Assets Grid */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-mono uppercase font-bold tracking-widest text-[#FF4D00]">
+            PACKAGE ASSETS
+          </span>
+          <span className="text-[11px] font-mono text-zinc-500">
+            8 PRODUCTION ARTIFACTS
+          </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {assets.map((asset) => {
-            const Icon = asset.icon;
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {assets.map((a) => {
+            const Icon = a.icon;
             return (
               <div
-                key={asset.id}
-                onClick={() => onNavigateTab(asset.tab)}
-                className="glass-card p-5 rounded-2xl cursor-pointer flex flex-col justify-between group hover:border-indigo-500/50"
+                key={a.id}
+                onClick={() => {
+                  if (a.isMiroAction && onSendToMiro) {
+                    onSendToMiro();
+                  } else {
+                    onNavigateTab(a.tab);
+                  }
+                }}
+                className="studio-card p-5 rounded-xs border border-white/[0.08] flex flex-col justify-between cursor-pointer group hover:border-[#FF4D00]/50"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <div className="p-2.5 rounded-xl bg-slate-800/80 border border-slate-700/60">
-                      <Icon className={`w-5 h-5 ${asset.color}`} />
+                    <div className="p-2 rounded-xs bg-[#141414] border border-white/[0.08] text-[#FF4D00]">
+                      <Icon className="w-4 h-4" />
                     </div>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 flex items-center space-x-1">
-                      <span>✓</span>
-                      <span>{asset.status}</span>
+                    <span className="text-[9px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-xs bg-white/[0.04] text-zinc-400 border border-white/[0.06]">
+                      {a.status}
                     </span>
                   </div>
 
-                  <h3 className="text-sm font-bold text-white group-hover:text-indigo-300 transition-colors">
-                    {asset.name}
+                  <h3 className="text-xs font-mono font-bold text-white uppercase tracking-wider group-hover:text-[#FF6A00] transition-colors">
+                    {a.name}
                   </h3>
-                  <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                    {asset.desc}
+
+                  <p className="text-[11px] text-zinc-400 mt-1 leading-snug">
+                    {a.desc}
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-indigo-400 font-semibold group-hover:translate-x-0.5 transition-transform">
-                  <span>Open Preview</span>
-                  <ChevronRight className="w-4 h-4" />
+                <div className="pt-4 flex items-center justify-between text-[10px] font-mono text-zinc-500 group-hover:text-white transition-colors">
+                  <span>VIEW ARTIFACT</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-[#FF4D00]" />
                 </div>
               </div>
             );
           })}
         </div>
-      </div>
-
-      {/* Big Action Bar */}
-      <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
-        <button
-          onClick={onPrepareForPitch}
-          className="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-white bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 shadow-xl shadow-emerald-900/30 text-base flex items-center justify-center space-x-2 transition-all hover:scale-[1.02]"
-        >
-          <Award className="w-5 h-5" />
-          <span>Prepare for Live Pitch Delivery</span>
-        </button>
       </div>
     </div>
   );

@@ -13,7 +13,7 @@ import {
   BrainCircuit,
   MessageSquare
 } from 'lucide-react';
-import { JudgeQuestion, JudgeCategory, JudgeDifficulty } from '@/types';
+import { JudgeQuestion, JudgeDifficulty } from '@/types';
 
 interface JudgeModeViewProps {
   questions: JudgeQuestion[];
@@ -33,63 +33,65 @@ export function JudgeModeView({ questions, onProceedToPackage }: JudgeModeViewPr
   const getDifficultyBadge = (difficulty: JudgeDifficulty) => {
     switch (difficulty) {
       case 'Brutal':
-        return 'bg-red-500/20 text-red-300 border-red-500/40';
+        return 'bg-red-500/15 text-[#FF2D00] border-red-500/40';
       case 'High':
-        return 'bg-orange-500/20 text-orange-300 border-orange-500/40';
+        return 'bg-[#FF4D00]/15 text-[#FF6A00] border-[#FF4D00]/30';
       case 'Medium':
-        return 'bg-amber-500/15 text-amber-300 border-amber-500/30';
+        return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
       case 'Low':
       default:
-        return 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30';
+        return 'bg-zinc-800 text-zinc-300 border-zinc-700';
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 max-w-7xl mx-auto px-2 sm:px-0">
       {/* Header Banner */}
-      <div className="glass-panel p-6 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="studio-panel p-6 sm:p-8 rounded-xs border border-white/[0.08] flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-card bg-grid-editorial relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#FF6A00] via-[#FF4D00] to-transparent" />
+
         <div>
-          <span className="text-[10px] uppercase font-bold tracking-widest text-indigo-400">
-            SKEPTICAL VC & HACKATHON JUDGE ROOM
+          <span className="text-[10px] font-mono uppercase font-bold tracking-widest text-[#FF4D00]">
+            STAGE 05 // INVESTOR SCRUTINY SIMULATION
           </span>
-          <h2 className="text-xl font-extrabold text-white tracking-tight mt-0.5">
-            Survive the 10 Critical Judge Questions
+          <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight mt-1 font-sans">
+            JUDGE DEFENSE ROOM
           </h2>
-          <p className="text-xs text-slate-400 mt-1 max-w-xl">
-            Answers are strictly grounded in your project context. If evidence is lacking, Qwen warns you before judges expose the hole.
+          <p className="text-xs font-mono text-zinc-400 mt-1 max-w-xl leading-relaxed">
+            Anticipate the 10 most aggressive questions hackathon judges and investors will ask. Grounded strictly in your project context.
           </p>
         </div>
 
         <div className="flex items-center space-x-3 shrink-0">
           <button
             onClick={onProceedToPackage}
-            className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-600/30 flex items-center space-x-1.5 transition-all"
+            className="btn-flame px-4 py-2 rounded-xs text-xs font-mono font-extrabold flex items-center space-x-1.5"
           >
-            <span>View Pitch Package</span>
+            <span>VIEW PITCH PACKAGE</span>
           </button>
         </div>
       </div>
 
       {/* Category Filter Tabs */}
-      <div className="flex items-center space-x-2 overflow-x-auto pb-1 bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
+      <div className="flex items-center space-x-2 overflow-x-auto pb-1 bg-[#101010] p-2 rounded-xs border border-white/[0.06]">
         <button
           onClick={() => setSelectedCategory('all')}
-          className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-colors shrink-0 ${
+          className={`text-xs font-mono px-3 py-1.5 rounded-xs transition-colors shrink-0 uppercase font-bold ${
             selectedCategory === 'all'
-              ? 'bg-indigo-600 text-white'
-              : 'text-slate-400 hover:text-white bg-slate-800'
+              ? 'bg-white text-black'
+              : 'text-zinc-400 hover:text-white bg-[#141414]'
           }`}
         >
-          All Questions ({questions.length})
+          ALL QUESTIONS ({questions.length})
         </button>
         {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => setSelectedCategory(cat)}
-            className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-colors shrink-0 ${
+            className={`text-xs font-mono px-3 py-1.5 rounded-xs transition-colors shrink-0 uppercase font-bold ${
               selectedCategory === cat
-                ? 'bg-indigo-600 text-white'
-                : 'text-slate-400 hover:text-white bg-slate-800'
+                ? 'bg-white text-black'
+                : 'text-zinc-400 hover:text-white bg-[#141414]'
             }`}
           >
             {cat}
@@ -106,10 +108,10 @@ export function JudgeModeView({ questions, onProceedToPackage }: JudgeModeViewPr
           return (
             <div
               key={q.id}
-              className={`rounded-2xl border transition-all overflow-hidden ${
+              className={`rounded-xs border transition-all overflow-hidden ${
                 isEvidenceNeeded
-                  ? 'bg-slate-900/90 border-amber-500/40'
-                  : 'glass-panel border-slate-800 hover:border-slate-700'
+                  ? 'bg-[#120F0D] border-[#FF4D00]/40'
+                  : 'bg-[#101010] border-white/[0.08] hover:border-white/[0.16]'
               }`}
             >
               {/* Question Header */}
@@ -118,20 +120,20 @@ export function JudgeModeView({ questions, onProceedToPackage }: JudgeModeViewPr
                 className="p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 cursor-pointer"
               >
                 <div className="flex items-start space-x-3.5">
-                  <div className="p-2 rounded-lg bg-slate-800/90 border border-slate-700/60 text-indigo-400 shrink-0 mt-0.5">
+                  <div className="p-2 rounded-xs bg-[#161616] border border-white/[0.08] text-[#FF4D00] shrink-0 mt-0.5">
                     <MessageSquare className="w-4 h-4" />
                   </div>
                   <div>
                     <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                      <span className="text-[10px] uppercase font-bold text-indigo-400 tracking-wider">
+                      <span className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest">
                         {q.category}
                       </span>
-                      <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded border ${getDifficultyBadge(q.difficulty)}`}>
-                        {q.difficulty} Difficulty
+                      <span className={`text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-xs border ${getDifficultyBadge(q.difficulty)}`}>
+                        {q.difficulty} DIFFICULTY
                       </span>
                       {isEvidenceNeeded && (
-                        <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-pink-500/10 text-pink-300 border border-pink-500/30">
-                          Evidence needed
+                        <span className="text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-xs bg-[#FF4D00]/15 text-[#FF6A00] border border-[#FF4D00]/30">
+                          PROOF NEEDED
                         </span>
                       )}
                     </div>
@@ -143,8 +145,8 @@ export function JudgeModeView({ questions, onProceedToPackage }: JudgeModeViewPr
                 </div>
 
                 <div className="flex items-center space-x-2 shrink-0 self-end md:self-auto">
-                  <button className="text-xs text-slate-400 hover:text-white flex items-center space-x-1">
-                    <span>{isExpanded ? 'Hide Answer' : 'Reveal Answer'}</span>
+                  <button className="text-xs font-mono text-zinc-400 hover:text-white flex items-center space-x-1">
+                    <span>{isExpanded ? 'HIDE DEFENSE' : 'REVEAL DEFENSE'}</span>
                     {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </button>
                 </div>
@@ -152,30 +154,30 @@ export function JudgeModeView({ questions, onProceedToPackage }: JudgeModeViewPr
 
               {/* Skeptical Angle & Suggested Answer */}
               {isExpanded && (
-                <div className="px-5 pb-5 pt-2 border-t border-slate-800/80 space-y-3 bg-black/30">
-                  <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800">
-                    <span className="text-[10px] uppercase font-bold text-rose-400 tracking-wider block mb-1">
-                      Skeptical Judge Angle:
+                <div className="px-5 pb-5 pt-3 border-t border-white/[0.06] space-y-3 bg-black/40">
+                  <div className="p-3 rounded-xs bg-[#121212] border border-red-500/20">
+                    <span className="text-[10px] font-mono uppercase font-bold text-[#FF2D00] tracking-wider block mb-1">
+                      SKEPTICAL ANGLE:
                     </span>
-                    <p className="text-xs text-slate-300 italic">
+                    <p className="text-xs text-zinc-300 italic">
                       {q.skepticalAngle}
                     </p>
                   </div>
 
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-emerald-400 tracking-wider block mb-1.5">
-                      Recommended Spoken Answer (Grounded in context):
+                    <span className="text-[10px] font-mono uppercase font-bold text-emerald-400 tracking-wider block mb-1.5">
+                      RECOMMENDED DEFENSE ANSWER (GROUNDED):
                     </span>
-                    <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium bg-slate-900/90 p-4 rounded-xl border border-slate-800">
+                    <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-normal bg-[#121212] p-4 rounded-xs border border-white/[0.08]">
                       {q.suggestedAnswer}
                     </p>
                   </div>
 
                   {q.evidenceNeeded && (
-                    <div className="p-3 rounded-xl bg-pink-500/10 border border-pink-500/30 text-pink-300 text-xs flex items-start space-x-2">
-                      <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-pink-400" />
+                    <div className="p-3 rounded-xs bg-[#FF4D00]/10 border border-[#FF4D00]/30 text-amber-200 text-xs font-mono flex items-start space-x-2">
+                      <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#FF4D00]" />
                       <div>
-                        <strong className="font-semibold">Evidence Needed:</strong> {q.evidenceNeeded}
+                        <strong>EVIDENCE GAP:</strong> {q.evidenceNeeded}
                       </div>
                     </div>
                   )}

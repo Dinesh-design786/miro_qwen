@@ -10,7 +10,6 @@ import {
   Mic2, 
   ShieldAlert, 
   Flame,
-  CheckCircle2,
   PackageCheck
 } from 'lucide-react';
 
@@ -32,20 +31,20 @@ export function PipelineProgress({
   hasAudio,
 }: PipelineProgressProps) {
   const steps = [
-    { id: 'overview', label: 'Idea Context', icon: Lightbulb, ready: true },
-    { id: 'miro', label: 'Miro Board', icon: LayoutDashboard, ready: true },
-    { id: 'analysis', label: 'Qwen Analysis', icon: BrainCircuit, ready: hasAnalysis },
-    { id: 'improve', label: 'Improve Pitch', icon: BarChart3, ready: hasAnalysis },
-    { id: 'attack', label: 'Attack Mode', icon: Flame, ready: hasAnalysis, highlight: true },
-    { id: 'presentation', label: 'Presentation', icon: Presentation, ready: hasDeck },
-    { id: 'script', label: 'Speaker Coach', icon: Mic2, ready: hasDeck },
-    { id: 'judge', label: 'AI Judge', icon: ShieldAlert, ready: hasAnalysis },
-    { id: 'package', label: 'Pitch Package', icon: PackageCheck, ready: hasDeck },
+    { id: 'overview', label: 'THESIS', icon: Lightbulb, ready: true },
+    { id: 'miro', label: 'MIRO CANVAS', icon: LayoutDashboard, ready: true },
+    { id: 'analysis', label: 'AI REASONING', icon: BrainCircuit, ready: hasAnalysis },
+    { id: 'improve', label: 'HARDEN', icon: BarChart3, ready: hasAnalysis },
+    { id: 'attack', label: 'ATTACK MODE', icon: Flame, ready: hasAnalysis, highlight: true },
+    { id: 'presentation', label: 'PITCH DECK', icon: Presentation, ready: hasDeck },
+    { id: 'script', label: 'COACH', icon: Mic2, ready: hasDeck },
+    { id: 'judge', label: 'JUDGE ROOM', icon: ShieldAlert, ready: hasAnalysis },
+    { id: 'package', label: 'DELIVERABLES', icon: PackageCheck, ready: hasDeck },
   ];
 
   return (
-    <div className="w-full bg-[#0B101E] border-b border-slate-800/80 px-4 py-2.5 overflow-x-auto">
-      <div className="max-w-7xl mx-auto flex items-center justify-between min-w-[760px] space-x-2">
+    <div className="w-full bg-[#0A0A0A] border-b border-white/[0.06] px-4 py-2 overflow-x-auto">
+      <div className="max-w-7xl mx-auto flex items-center justify-between min-w-[760px] space-x-1">
         {steps.map((step, index) => {
           const Icon = step.icon;
           const isActive = activeTab === step.id;
@@ -55,35 +54,35 @@ export function PipelineProgress({
             <React.Fragment key={step.id}>
               <button
                 onClick={() => setActiveTab(step.id)}
-                className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all group ${
+                className={`flex items-center space-x-2 px-3 py-1.5 rounded-xs text-[11px] font-mono tracking-wider transition-all uppercase ${
                   isActive
                     ? isAttack 
-                      ? 'bg-rose-500/20 text-rose-300 border border-rose-500/50 shadow-lg shadow-rose-900/30'
-                      : 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30'
+                      ? 'bg-[#FF2D00]/20 text-[#FF4D00] border border-[#FF2D00]/50 shadow-flame-sm font-bold'
+                      : 'bg-white text-black font-extrabold shadow-sm'
                     : isAttack
-                    ? 'text-rose-400/80 hover:text-rose-300 hover:bg-rose-500/10'
+                    ? 'text-[#FF4D00]/80 hover:text-[#FF4D00] hover:bg-[#FF4D00]/10 font-bold'
                     : step.ready
-                    ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                    : 'text-slate-600 hover:text-slate-400'
+                    ? 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'
+                    : 'text-zinc-600 hover:text-zinc-400 opacity-60'
                 }`}
               >
                 <Icon className={`w-3.5 h-3.5 ${
                   isActive 
-                    ? 'text-white' 
+                    ? isAttack ? 'text-[#FF2D00]' : 'text-black' 
                     : isAttack 
-                    ? 'text-rose-400' 
+                    ? 'text-[#FF4D00]' 
                     : step.ready 
-                    ? 'text-indigo-400' 
-                    : 'text-slate-600'
+                    ? 'text-[#FF6A00]' 
+                    : 'text-zinc-600'
                 }`} />
                 <span className="whitespace-nowrap">{step.label}</span>
                 {step.ready && step.id !== 'overview' && step.id !== 'miro' && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 ml-1" />
+                  <span className="w-1 h-1 rounded-full bg-[#FF4D00] ml-0.5" />
                 )}
               </button>
 
               {index < steps.length - 1 && (
-                <div className="h-[1px] w-4 bg-slate-800 shrink-0" />
+                <span className="text-zinc-700 text-xs font-mono select-none px-1">/</span>
               )}
             </React.Fragment>
           );

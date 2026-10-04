@@ -178,3 +178,5 @@ PitchForge enforces strict rules to prevent hallucinated pitching:
    - `[Assumption]`
    - `[Unverified claim]`
 3. **Judge Grounding**: In AI Judge mode, if the project context does not supply verifiable proof to answer a tough question, Qwen explicitly states: *"Your current project context does not provide enough evidence to answer this confidently."*
+#   m i r o _ q w e n  
+ 

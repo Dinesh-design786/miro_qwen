@@ -9,10 +9,8 @@ import {
   ArrowRight, 
   ExternalLink, 
   Cpu, 
-  BarChart3, 
   Flame,
-  CheckCircle2,
-  FileText
+  CheckCircle2
 } from 'lucide-react';
 import { Project, BoardContext, PitchAnalysis } from '@/types';
 
@@ -32,52 +30,52 @@ export function OverviewView({
   onAnalyzeIdea,
 }: OverviewViewProps) {
   return (
-    <div className="space-y-6">
-      {/* Project Banner */}
-      <div className="glass-panel p-6 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <div className="space-y-8 max-w-7xl mx-auto px-2 sm:px-0">
+      {/* Studio Project Header */}
+      <div className="studio-panel p-6 sm:p-8 rounded-xs border border-white/[0.08] flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-card bg-grid-editorial relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#FF6A00] via-[#FF4D00] to-transparent" />
+
         <div>
-          <div className="flex items-center space-x-2">
-            <span className="text-[10px] uppercase font-bold tracking-widest text-indigo-400">
-              ACTIVE WORKSPACE
-            </span>
+          <div className="flex items-center space-x-2 text-[10px] font-mono tracking-widest uppercase font-bold text-[#FF4D00]">
+            <span>ACTIVE WORKSPACE</span>
             {project.isDemo && (
-              <span className="text-[10px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded">
-                Demo Project (AI Bug Triage Agent)
+              <span className="text-[9px] font-mono font-bold bg-white/[0.06] text-zinc-300 border border-white/[0.1] px-2 py-0.5 rounded-xs">
+                DEMO PROJECT
               </span>
             )}
           </div>
-          <h1 className="text-2xl font-black text-white tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-4xl font-black text-white uppercase tracking-tight mt-1 font-sans">
             {project.name}
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Created: {new Date(project.createdAt).toLocaleDateString()} • Orchestrating Miro + Qwen Studio
+          <p className="text-xs font-mono text-zinc-500 mt-1">
+            INITIALIZED: {new Date(project.createdAt).toLocaleDateString()} • MIRO CANVAS + QWEN STRATEGY LAB
           </p>
         </div>
 
-        <div className="flex items-center space-x-2.5 shrink-0">
+        <div className="flex items-center space-x-2.5 shrink-0 flex-wrap gap-2">
           <button
             onClick={() => onNavigateTab('miro')}
-            className="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center space-x-1.5 transition-colors"
+            className="px-3.5 py-2 rounded-xs text-xs font-mono text-zinc-300 hover:text-white bg-[#141414] hover:bg-[#1A1A1A] border border-white/[0.08] flex items-center space-x-1.5 transition-colors"
           >
-            <Layers className="w-3.5 h-3.5 text-amber-400" />
-            <span>Inspect Miro Canvas</span>
+            <Layers className="w-3.5 h-3.5 text-[#FF6A00]" />
+            <span>INSPECT MIRO CANVAS</span>
           </button>
 
           {!analysis ? (
             <button
               onClick={onAnalyzeIdea}
-              className="px-4 py-2 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-600/30 flex items-center space-x-1.5 transition-all"
+              className="btn-flame px-4 py-2 rounded-xs text-xs font-mono font-extrabold flex items-center space-x-1.5"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Analyze with Qwen</span>
+              <span>REASON WITH QWEN</span>
             </button>
           ) : (
             <button
               onClick={() => onNavigateTab('attack')}
-              className="px-4 py-2 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 shadow-md shadow-rose-900/30 flex items-center space-x-1.5 transition-all"
+              className="px-4 py-2 rounded-xs text-xs font-mono font-bold text-white bg-gradient-to-r from-[#FF2D00] to-red-700 hover:from-[#FF4D00] hover:to-red-600 shadow-flame-sm flex items-center space-x-1.5 transition-all"
             >
               <Flame className="w-3.5 h-3.5" />
-              <span>Attack My Pitch</span>
+              <span>ATTACK MY PITCH</span>
             </button>
           )}
         </div>
@@ -86,98 +84,98 @@ export function OverviewView({
       {/* 2-Column Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Problem Statement Card */}
-        <div className="glass-card p-6 rounded-2xl space-y-3">
-          <div className="flex items-center space-x-2 text-rose-400">
-            <Lightbulb className="w-4 h-4" />
-            <span className="text-xs font-bold uppercase tracking-wider">The Problem Statement</span>
+        <div className="studio-card p-6 rounded-xs space-y-2 border border-white/[0.08]">
+          <div className="flex items-center space-x-2 text-[10px] font-mono font-bold uppercase tracking-widest text-[#FF4D00]">
+            <Lightbulb className="w-3.5 h-3.5" />
+            <span>THE PROBLEM STATEMENT</span>
           </div>
-          <p className="text-sm text-slate-200 leading-relaxed font-medium">
+          <p className="text-sm text-zinc-200 leading-relaxed font-normal pt-1">
             {project.problemStatement}
           </p>
         </div>
 
         {/* Target Audience Card */}
-        <div className="glass-card p-6 rounded-2xl space-y-3">
-          <div className="flex items-center space-x-2 text-indigo-400">
-            <Users className="w-4 h-4" />
-            <span className="text-xs font-bold uppercase tracking-wider">Target Customer & Persona</span>
+        <div className="studio-card p-6 rounded-xs space-y-2 border border-white/[0.08]">
+          <div className="flex items-center space-x-2 text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-400">
+            <Users className="w-3.5 h-3.5 text-[#FF6A00]" />
+            <span>TARGET CUSTOMER & PERSONA</span>
           </div>
-          <p className="text-sm text-slate-200 leading-relaxed font-medium">
+          <p className="text-sm text-zinc-200 leading-relaxed font-normal pt-1">
             {project.targetAudience}
           </p>
         </div>
 
         {/* Proposed Solution Card */}
-        <div className="glass-card p-6 rounded-2xl space-y-3">
-          <div className="flex items-center space-x-2 text-emerald-400">
-            <Sparkles className="w-4 h-4" />
-            <span className="text-xs font-bold uppercase tracking-wider">Proposed Solution</span>
+        <div className="studio-card p-6 rounded-xs space-y-2 border border-white/[0.08]">
+          <div className="flex items-center space-x-2 text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-400">
+            <Sparkles className="w-3.5 h-3.5 text-[#FF4D00]" />
+            <span>PROPOSED SOLUTION & SECRET SAUCE</span>
           </div>
-          <p className="text-sm text-slate-200 leading-relaxed">
+          <p className="text-sm text-zinc-300 leading-relaxed pt-1">
             {project.solutionDescription || 'Autonomous AI orchestration agent that turns unstructured data into verified execution.'}
           </p>
         </div>
 
-        {/* Connected Miro Workspace */}
-        <div className="glass-card p-6 rounded-2xl space-y-3">
-          <div className="flex items-center space-x-2 text-amber-400">
-            <Layers className="w-4 h-4" />
-            <span className="text-xs font-bold uppercase tracking-wider">Connected Miro Workspace</span>
+        {/* Connected Miro Workspace Card */}
+        <div className="studio-card p-6 rounded-xs space-y-3 border border-white/[0.08]">
+          <div className="flex items-center space-x-2 text-[10px] font-mono font-bold uppercase tracking-widest text-[#FF6A00]">
+            <Layers className="w-3.5 h-3.5" />
+            <span>CONNECTED MIRO WORKSPACE</span>
           </div>
-          <div className="space-y-1.5 text-xs text-slate-300">
+          <div className="space-y-2 text-xs font-mono text-zinc-300 pt-1">
             <div className="flex justify-between">
-              <span className="text-slate-400">Board Title:</span>
-              <span className="font-semibold text-white">{boardContext.title}</span>
+              <span className="text-zinc-500">BOARD TITLE:</span>
+              <span className="font-bold text-white">{boardContext.title}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-400">Extracted Canvas Items:</span>
-              <span className="font-semibold text-slate-200">{boardContext.items.length} sticky notes & frames</span>
+              <span className="text-zinc-500">CANVAS ITEMS:</span>
+              <span className="text-zinc-300">{boardContext.items.length} sticky notes & frames</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-400">Sync Status:</span>
-              <span className="text-emerald-400 font-semibold">Active & Normalized</span>
+              <span className="text-zinc-500">CANVAS SYNC:</span>
+              <span className="text-emerald-400 font-bold">✓ Active & Normalized</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Quick Launch Pipeline Links */}
-      <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-3">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-          Studio Workflow Navigation
+      {/* Studio Workflow Navigation */}
+      <div className="studio-panel p-6 rounded-xs border border-white/[0.08] space-y-4">
+        <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-zinc-400">
+          STUDIO PROTOCOL SEQUENCE
         </h3>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <button
             onClick={() => onNavigateTab('miro')}
-            className="p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-left border border-slate-700/60 transition-all hover:scale-[1.01]"
+            className="p-3.5 rounded-xs bg-[#101010] hover:bg-[#161616] text-left border border-white/[0.06] hover:border-[#FF4D00]/40 transition-all"
           >
-            <span className="text-[10px] text-amber-400 font-bold uppercase block">1. Visualize</span>
-            <span className="text-xs font-bold text-white mt-0.5 block">Miro Workspace</span>
+            <span className="text-[10px] font-mono text-[#FF4D00] font-bold uppercase block">STAGE 01</span>
+            <span className="text-xs font-mono font-bold text-white mt-1 block">MIRO WORKSPACE</span>
           </button>
 
           <button
             onClick={() => onNavigateTab('analysis')}
-            className="p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-left border border-slate-700/60 transition-all hover:scale-[1.01]"
+            className="p-3.5 rounded-xs bg-[#101010] hover:bg-[#161616] text-left border border-white/[0.06] hover:border-[#FF4D00]/40 transition-all"
           >
-            <span className="text-[10px] text-indigo-400 font-bold uppercase block">2. Reason</span>
-            <span className="text-xs font-bold text-white mt-0.5 block">Qwen Analysis</span>
+            <span className="text-[10px] font-mono text-[#FF6A00] font-bold uppercase block">STAGE 02</span>
+            <span className="text-xs font-mono font-bold text-white mt-1 block">AI REASONING</span>
           </button>
 
           <button
             onClick={() => onNavigateTab('attack')}
-            className="p-3 rounded-xl bg-rose-950/40 hover:bg-rose-950/60 text-left border border-rose-500/30 transition-all hover:scale-[1.01]"
+            className="p-3.5 rounded-xs bg-[#150A0A] hover:bg-[#1C0E0E] text-left border border-red-500/30 hover:border-red-500/60 transition-all"
           >
-            <span className="text-[10px] text-rose-400 font-bold uppercase block">3. Stress-Test</span>
-            <span className="text-xs font-bold text-white mt-0.5 block">Attack My Pitch</span>
+            <span className="text-[10px] font-mono text-[#FF2D00] font-bold uppercase block">STAGE 03</span>
+            <span className="text-xs font-mono font-bold text-white mt-1 block">ATTACK WAR ROOM</span>
           </button>
 
           <button
             onClick={() => onNavigateTab('presentation')}
-            className="p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-left border border-slate-700/60 transition-all hover:scale-[1.01]"
+            className="p-3.5 rounded-xs bg-[#101010] hover:bg-[#161616] text-left border border-white/[0.06] hover:border-[#FF4D00]/40 transition-all"
           >
-            <span className="text-[10px] text-emerald-400 font-bold uppercase block">4. Pitch & PPT</span>
-            <span className="text-xs font-bold text-white mt-0.5 block">Presentation</span>
+            <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase block">STAGE 04</span>
+            <span className="text-xs font-mono font-bold text-white mt-1 block">10-SLIDE PITCH</span>
           </button>
         </div>
       </div>

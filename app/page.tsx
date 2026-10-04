@@ -71,11 +71,18 @@ export default function Home() {
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      if (params.get('miro_connected') === 'true') {
-        showToast('✓ Successfully connected to Miro account via OAuth!');
+      if (params.get('miro') === 'connected' || params.get('miro_connected') === 'true') {
+        showToast('🟢 Miro Account Connected! Ready to send pitches to your boards.');
         window.history.replaceState({}, '', window.location.pathname);
       } else if (params.get('miro_error')) {
-        showToast(`Miro Connection Notice: ${params.get('miro_error')}`);
+        let rawErr = params.get('miro_error') || '';
+        let cleanNotice = rawErr;
+        if (rawErr.includes('secretKeyNotFound') || rawErr.includes('ClientSecret does not exist')) {
+          cleanNotice = 'Miro OAuth secret key mismatch. You can paste your Miro Access Token directly in the Send to Miro dialog.';
+        } else if (rawErr.includes('401') || rawErr.startsWith('{')) {
+          cleanNotice = 'Miro authorization notice: You can use your direct Miro Access Token in the Send to Miro dialog.';
+        }
+        showToast(`Miro Notice: ${cleanNotice}`);
         window.history.replaceState({}, '', window.location.pathname);
       }
     }
@@ -298,11 +305,14 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#080C14] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#080808] text-[#EDEDED] flex flex-col font-sans relative selection:bg-[#FF4D00] selection:text-black bg-grid-editorial">
+      {/* Background Subtle Atmosphere Glow */}
+      <div className="fixed top-[-100px] left-1/3 w-[600px] h-[600px] bg-gradient-to-b from-[#FF4D00]/06 to-transparent blur-[140px] pointer-events-none -z-10" />
+
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-indigo-950 border border-indigo-500/50 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-2xl animate-in slide-in-from-bottom duration-200 flex items-center space-x-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+        <div className="fixed bottom-6 right-6 z-50 bg-[#121212] border border-[#FF4D00]/50 text-white text-xs font-mono px-4 py-3 rounded-xs shadow-flame flex items-center space-x-2 animate-in slide-in-from-bottom duration-200">
+          <span className="w-2 h-2 rounded-full bg-[#FF4D00] animate-ping" />
           <span>{toastMessage}</span>
         </div>
       )}
@@ -471,15 +481,15 @@ export default function Home() {
       )}
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 bg-[#060910] py-6 px-4 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <footer className="border-t border-white/[0.08] bg-[#070707] py-8 px-6 text-center text-xs font-mono text-zinc-500">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center space-x-2">
-            <span className="font-bold text-slate-300">PitchForge</span>
-            <span>•</span>
-            <span>Miro Workspace + Qwen Reasoning Studio</span>
+            <span className="font-extrabold text-white tracking-widest uppercase">PITCHFORGE</span>
+            <span className="text-zinc-700">•</span>
+            <span className="text-zinc-400">AI PITCH WAR ROOM // MIRO + QWEN STRATEGY LAB</span>
           </div>
           <div>
-            <span>Turn your team&apos;s raw thinking into a pitch that survives scrutiny.</span>
+            <span className="text-zinc-500">From raw canvas thinking to investor defense.</span>
           </div>
         </div>
       </footer>

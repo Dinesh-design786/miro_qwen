@@ -7,13 +7,10 @@ import {
   AlertOctagon, 
   CheckCircle2, 
   ArrowRight, 
-  Edit3, 
-  HelpCircle,
-  TrendingUp,
-  ShieldCheck,
-  Zap,
-  ChevronDown,
-  ChevronUp
+  ShieldCheck, 
+  Zap, 
+  ChevronDown, 
+  ChevronUp 
 } from 'lucide-react';
 import { PitchAttackReport, PitchAttackItem, AttackSeverity } from '@/types';
 
@@ -42,27 +39,27 @@ export function AttackMyPitchView({
       case 'critical':
         return {
           label: 'CRITICAL THREAT',
-          classes: 'bg-rose-500/20 text-rose-300 border-rose-500/50',
-          indicator: 'bg-rose-500 animate-ping',
+          classes: 'bg-red-500/15 text-[#FF2D00] border-red-500/40',
+          indicator: 'bg-[#FF2D00] animate-ping',
         };
       case 'high':
         return {
           label: 'HIGH VULNERABILITY',
-          classes: 'bg-orange-500/20 text-orange-300 border-orange-500/40',
-          indicator: 'bg-orange-500',
+          classes: 'bg-[#FF4D00]/15 text-[#FF6A00] border-[#FF4D00]/40',
+          indicator: 'bg-[#FF4D00]',
         };
       case 'medium':
         return {
           label: 'MEDIUM RISK',
-          classes: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+          classes: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
           indicator: 'bg-amber-400',
         };
       case 'low':
       default:
         return {
           label: 'POLISH ISSUE',
-          classes: 'bg-slate-700/40 text-slate-300 border-slate-600/40',
-          indicator: 'bg-slate-400',
+          classes: 'bg-zinc-800 text-zinc-300 border-zinc-700',
+          indicator: 'bg-zinc-400',
         };
     }
   };
@@ -74,59 +71,60 @@ export function AttackMyPitchView({
   };
 
   return (
-    <div className="space-y-6">
-      {/* Signature Attack Mode Hero Banner */}
-      <div className="relative overflow-hidden p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-rose-950/80 via-[#18080C] to-slate-950 border border-rose-600/40 shadow-2xl attack-glow">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-rose-500/10 blur-[90px] pointer-events-none" />
+    <div className="space-y-8 max-w-7xl mx-auto px-2 sm:px-0">
+      {/* Editorial War-Room Hero Banner */}
+      <div className="relative overflow-hidden p-6 sm:p-10 rounded-xs bg-[#0C0808] border border-red-500/30 shadow-card">
+        {/* Flame Atmospheric Glow */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#FF2D00]/10 blur-[100px] pointer-events-none" />
 
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
           <div>
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-black uppercase tracking-wider mb-2">
-              <Flame className="w-3.5 h-3.5 text-rose-400 fill-rose-400" />
-              <span>Skeptical Judge Stress Test</span>
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-xs bg-[#FF2D00]/15 border border-[#FF2D00]/40 text-[#FF6A00] text-[10px] font-mono font-bold uppercase tracking-widest mb-3">
+              <Flame className="w-3.5 h-3.5 text-[#FF2D00]" />
+              <span>SKEPTICAL INVESTOR STRESS TEST</span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
+            <h1 className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tight font-sans">
               ATTACK MY PITCH
             </h1>
-            <p className="text-sm sm:text-base text-rose-200/80 mt-1 max-w-xl font-medium">
-              &ldquo;Let&apos;s find every reason a skeptical judge or VC could reject this idea.&rdquo;
+            <p className="text-xs sm:text-sm text-zinc-400 mt-2 max-w-xl font-normal leading-relaxed">
+              Exposing unsupported assumptions, market risks, and structural vulnerabilities before facing real judges.
             </p>
           </div>
 
           {/* Survival Score Badge */}
-          <div className="p-4 rounded-2xl bg-black/60 border border-rose-500/30 flex items-center space-x-4 shrink-0 shadow-lg">
+          <div className="p-5 rounded-xs bg-[#111111] border border-white/[0.08] flex items-center space-x-5 shrink-0 shadow-flame-sm">
             <div className="text-right">
-              <span className="text-[10px] uppercase font-bold text-rose-300 tracking-wider block">
-                PITCH SURVIVAL SCORE
+              <span className="text-[10px] uppercase font-mono font-bold text-zinc-400 tracking-wider block">
+                SURVIVAL CALIBRATION
               </span>
               <div className="flex items-baseline justify-end space-x-1 mt-0.5">
-                <span className="text-3xl font-black text-white font-mono">
+                <span className="text-4xl font-black text-white font-mono">
                   {currentSurvivalScore}
                 </span>
-                <span className="text-sm font-semibold text-rose-400/80">/ 100</span>
+                <span className="text-xs font-mono text-[#FF4D00] font-bold">/ 100</span>
               </div>
-              <span className="text-[10px] text-slate-400">
-                {addressedCount > 0 ? `+${addressedCount * 8} pts recovered` : 'High vulnerability'}
+              <span className="text-[10px] font-mono text-zinc-500 block mt-0.5">
+                {addressedCount > 0 ? `+${addressedCount * 8} PTS RECOVERED` : 'HIGH VULNERABILITY'}
               </span>
             </div>
 
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-rose-600 to-amber-500 flex items-center justify-center text-white shadow-md">
+            <div className="w-12 h-12 rounded-xs bg-gradient-to-tr from-[#FF2D00] to-[#FF6A00] flex items-center justify-center text-black font-black shadow-flame-sm">
               <ShieldAlert className="w-6 h-6" />
             </div>
           </div>
         </div>
 
-        {/* Priorities Alert */}
-        <div className="mt-6 pt-4 border-t border-rose-900/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-          <span className="text-rose-200 font-semibold flex items-center space-x-2">
-            <AlertOctagon className="w-4 h-4 text-rose-400 shrink-0" />
-            <span>Fix these {attackReport.attacks.filter(a => a.severity === 'critical').length || 3} critical issues before facing judges.</span>
+        {/* Priority Action */}
+        <div className="mt-8 pt-4 border-t border-white/[0.06] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-mono">
+          <span className="text-zinc-300 flex items-center space-x-2">
+            <AlertOctagon className="w-4 h-4 text-[#FF2D00] shrink-0" />
+            <span>Fix these {attackReport.attacks.filter(a => a.severity === 'critical').length || 3} critical issues before entering the room.</span>
           </span>
           <button
             onClick={onProceedToPitch}
-            className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-600/30 flex items-center space-x-1.5 transition-all self-end sm:self-auto"
+            className="btn-flame px-4 py-2 rounded-xs text-xs font-mono font-extrabold flex items-center space-x-1.5 self-end sm:self-auto"
           >
-            <span>Proceed to Presentation</span>
+            <span>PROCEED TO PITCH</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -143,12 +141,12 @@ export function AttackMyPitchView({
           return (
             <div
               key={atk.id}
-              className={`rounded-2xl border transition-all overflow-hidden ${
+              className={`rounded-xs border transition-all overflow-hidden ${
                 isAddressed 
-                  ? 'bg-slate-900/80 border-emerald-500/40' 
+                  ? 'bg-[#0E120E] border-emerald-500/40' 
                   : atk.severity === 'critical'
-                  ? 'bg-[#150D13] border-rose-500/40 hover:border-rose-500/60'
-                  : 'glass-panel border-slate-800 hover:border-slate-700'
+                  ? 'bg-[#100A0A] border-red-500/30 hover:border-red-500/60'
+                  : 'bg-[#101010] border-white/[0.08] hover:border-[#FF4D00]/40'
               }`}
             >
               {/* Card Header */}
@@ -158,16 +156,16 @@ export function AttackMyPitchView({
                     <span className={`w-2.5 h-2.5 rounded-full block ${badge.indicator}`} />
                   </div>
                   <div>
-                    <div className="flex flex-wrap items-center gap-2 mb-1">
-                      <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md border ${badge.classes}`}>
+                    <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                      <span className={`text-[9px] font-mono font-black uppercase tracking-wider px-2 py-0.5 rounded-xs border ${badge.classes}`}>
                         {badge.label}
                       </span>
-                      <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                      <span className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest">
                         {atk.category}
                       </span>
                     </div>
 
-                    <h3 className="text-base font-bold text-slate-100 tracking-tight">
+                    <h3 className="text-base font-bold text-white tracking-tight">
                       &ldquo;{atk.issue}&rdquo;
                     </h3>
                   </div>
@@ -175,17 +173,17 @@ export function AttackMyPitchView({
 
                 <div className="flex items-center space-x-2 shrink-0 self-end md:self-auto">
                   {isAddressed ? (
-                    <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full flex items-center space-x-1">
+                    <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-xs flex items-center space-x-1">
                       <ShieldCheck className="w-3.5 h-3.5" />
-                      <span>Addressed in Defense</span>
+                      <span>ARMED IN DEFENSE</span>
                     </span>
                   ) : (
                     <button
                       onClick={() => setExpandedId(isExpanded ? null : atk.id)}
-                      className="text-xs font-bold text-rose-300 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 px-3.5 py-1.5 rounded-lg transition-colors flex items-center space-x-1"
+                      className="text-xs font-mono font-bold text-white bg-[#1A1A1A] hover:bg-[#222222] border border-white/[0.1] px-3.5 py-1.5 rounded-xs transition-colors flex items-center space-x-1.5"
                     >
-                      <Zap className="w-3.5 h-3.5" />
-                      <span>{isExpanded ? 'Hide Defense' : 'Arm Defense'}</span>
+                      <Zap className="w-3 h-3 text-[#FF4D00]" />
+                      <span>{isExpanded ? 'HIDE DEFENSE' : 'ARM DEFENSE'}</span>
                       {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                     </button>
                   )}
@@ -193,21 +191,21 @@ export function AttackMyPitchView({
               </div>
 
               {/* Explanations Body */}
-              <div className="px-5 pb-5 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs border-t border-slate-800/80 pt-4">
+              <div className="px-5 pb-5 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs border-t border-white/[0.06] pt-4">
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-rose-400 tracking-wider">
-                    Why A Judge Will Attack This
+                  <span className="text-[10px] font-mono uppercase font-bold text-[#FF2D00] tracking-wider block mb-1">
+                    WHY JUDGES WILL ATTACK THIS:
                   </span>
-                  <p className="mt-1 text-slate-300 leading-relaxed">
+                  <p className="text-zinc-300 leading-relaxed">
                     {atk.whyItMatters}
                   </p>
                 </div>
 
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">
-                    Recommended Defense & Remedy
+                  <span className="text-[10px] font-mono uppercase font-bold text-emerald-400 tracking-wider block mb-1">
+                    COUNTER-STRATEGY & REMEDY:
                   </span>
-                  <p className="mt-1 text-slate-300 leading-relaxed font-medium">
+                  <p className="text-zinc-300 leading-relaxed font-medium">
                     {atk.recommendedFix}
                   </p>
                 </div>
@@ -215,32 +213,32 @@ export function AttackMyPitchView({
 
               {/* Expandable Defense Form */}
               {isExpanded && (
-                <div className="px-5 pb-5 pt-2 bg-black/40 border-t border-slate-800/80 space-y-3">
+                <div className="px-5 pb-5 pt-3 bg-black/60 border-t border-white/[0.08] space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-200">
-                      Tailor your spoken defense to the judges:
+                    <span className="text-xs font-mono font-bold text-zinc-200 uppercase tracking-wide">
+                      Tailor your spoken counterargument for the room:
                     </span>
                   </div>
                   <textarea
                     rows={3}
                     value={userText}
                     onChange={(e) => setDefenseDrafts(prev => ({ ...prev, [atk.id]: e.target.value }))}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-rose-500"
-                    placeholder="Enter the specific evidence or counterargument you will present..."
+                    className="w-full bg-[#121212] border border-white/[0.1] rounded-xs p-3 text-xs text-white font-mono focus:outline-none focus:border-[#FF4D00]"
+                    placeholder="Enter the specific proof or defense point you will deliver..."
                   />
                   <div className="flex justify-end space-x-2">
                     <button
                       onClick={() => setExpandedId(null)}
-                      className="px-3 py-1.5 text-xs text-slate-400 hover:text-white"
+                      className="px-3 py-1.5 text-xs font-mono text-zinc-500 hover:text-white"
                     >
-                      Cancel
+                      CANCEL
                     </button>
                     <button
                       onClick={() => handleSaveDefense(atk)}
-                      className="px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-md shadow-rose-900/30 flex items-center space-x-1"
+                      className="btn-flame px-4 py-1.5 rounded-xs text-xs font-mono font-extrabold flex items-center space-x-1"
                     >
                       <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>Lock In Defense (+8 pts)</span>
+                      <span>LOCK IN DEFENSE (+8 PTS)</span>
                     </button>
                   </div>
                 </div>

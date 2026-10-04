@@ -2,18 +2,16 @@
 
 import React, { useState } from 'react';
 import { 
-  Presentation, 
   Download, 
   RotateCcw, 
   Edit3, 
   ChevronLeft, 
   ChevronRight, 
   Clock, 
-  Maximize2, 
-  Mic2,
   Sparkles,
   Layers,
-  Check
+  Check,
+  Mic2
 } from 'lucide-react';
 import { PitchDeck, Slide } from '@/types';
 import { exportPitchDeckToPPTX, downloadBlob } from '@/services/export/pptxExport';
@@ -40,6 +38,20 @@ export function PresentationViewer({
   const [editedKeyPoints, setEditedKeyPoints] = useState('');
 
   const currentSlide = deck.slides[currentSlideIndex] || deck.slides[0];
+
+  // Map 10 canonical editorial titles
+  const canonicalSlideNames = [
+    '01 PROBLEM',
+    '02 INSIGHT',
+    '03 SOLUTION',
+    '04 PRODUCT',
+    '05 MARKET',
+    '06 BUSINESS MODEL',
+    '07 COMPETITION',
+    '08 TECHNOLOGY',
+    '09 TRACTION',
+    '10 ASK',
+  ];
 
   const handlePrev = () => {
     setCurrentSlideIndex(prev => Math.max(0, prev - 1));
@@ -82,251 +94,212 @@ export function PresentationViewer({
     }
   };
 
+  const slideNumberFormatted = String(currentSlideIndex + 1).padStart(2, '0');
+
   return (
-    <div className="space-y-6">
-      {/* Top Controls Bar */}
-      <div className="glass-panel p-5 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <div className="space-y-8 max-w-7xl mx-auto px-2 sm:px-0">
+      {/* Top Editorial Control Header */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-white/[0.08]">
         <div>
-          <div className="flex items-center space-x-2">
-            <span className="text-[10px] uppercase font-bold tracking-widest text-indigo-400">
-              16:9 SLIDE GENERATOR
-            </span>
-            <span className="text-slate-400">•</span>
-            <span className="text-xs text-slate-300 font-medium">
-              Slide {currentSlideIndex + 1} of {deck.slides.length}
-            </span>
-          </div>
-          <h2 className="text-lg font-bold text-white tracking-tight mt-0.5">
-            {deck.title}
-          </h2>
+          <span className="text-[10px] font-mono tracking-widest text-[#FF4D00] uppercase font-bold">
+            PRESENTATION STUDIO
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight mt-0.5">
+            YOUR PITCH
+          </h1>
+          <p className="text-xs font-mono text-zinc-400 mt-1">
+            {deck.title} • 10-SLIDE EDITORIAL DECK • AUDITED FOR DEFENSE
+          </p>
         </div>
 
-        <div className="flex items-center space-x-2.5 shrink-0 flex-wrap gap-2">
+        <div className="flex items-center space-x-2.5 flex-wrap gap-2">
           {onSendToMiro && (
             <button
               onClick={onSendToMiro}
-              className="px-3.5 py-2 rounded-lg text-xs font-bold text-slate-950 bg-[#FFD02F] hover:bg-[#F2C425] shadow-md shadow-amber-500/20 flex items-center space-x-1.5 transition-all hover:scale-[1.02]"
+              className="px-4 py-2 rounded-xs text-xs font-mono font-bold text-black bg-[#FFD02F] hover:bg-[#F2C425] shadow-sm flex items-center space-x-1.5 transition-all hover:scale-[1.02]"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-slate-950" />
-              <span>Send Pitch to Miro</span>
+              <span>✦ SEND TO MIRO</span>
             </button>
           )}
 
           <button
             onClick={onNavigateToScript}
-            className="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center space-x-1.5 transition-colors"
+            className="px-3.5 py-2 rounded-xs text-xs font-mono font-medium text-zinc-300 hover:text-white bg-[#121212] hover:bg-[#1A1A1A] border border-white/[0.08] flex items-center space-x-1.5 transition-all"
           >
-            <Mic2 className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Speaker Coach</span>
-          </button>
-
-          <button
-            onClick={onRegenerateEntirePitch}
-            className="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center space-x-1.5 transition-colors"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>Regenerate Pitch</span>
+            <Mic2 className="w-3.5 h-3.5 text-[#FF6A00]" />
+            <span>SPEAKER SCRIPT</span>
           </button>
 
           <button
             onClick={handleExportPPTX}
             disabled={isExporting}
-            className="px-4 py-2 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-600/30 flex items-center space-x-1.5 transition-all disabled:opacity-50"
+            className="btn-flame px-4 py-2 rounded-xs text-xs font-mono font-extrabold flex items-center space-x-1.5 disabled:opacity-50"
           >
             <Download className="w-3.5 h-3.5" />
-            <span>{isExporting ? 'Generating PPTX...' : 'Export PPTX'}</span>
+            <span>{isExporting ? 'EXPORTING...' : 'EXPORT PPTX'}</span>
           </button>
         </div>
       </div>
 
-      {/* Main Slide Stage & Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Thumbnails Sidebar */}
-        <div className="lg:col-span-1 glass-panel p-4 rounded-2xl max-h-[580px] overflow-y-auto space-y-2">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-800 text-xs text-slate-400">
-            <span className="font-semibold uppercase tracking-wider text-[10px]">Slides</span>
-            <span>{deck.slides.length} Total</span>
+      {/* CINEMATIC PRESENTATION STAGE */}
+      <div className="relative rounded-xs border border-white/[0.1] bg-[#0A0A0A] shadow-card overflow-hidden">
+        {/* Top Flame Accent Line */}
+        <div className="h-[2px] w-full bg-gradient-to-r from-[#FF6A00] via-[#FF4D00] to-transparent" />
+
+        <div className="p-6 sm:p-12 min-h-[480px] flex flex-col justify-between relative bg-grid-editorial">
+          {/* Slide Top Meta */}
+          <div className="flex items-start justify-between">
+            <div className="space-y-1">
+              <span className="text-4xl sm:text-6xl font-black font-sans text-white/20 select-none tracking-tight block">
+                {slideNumberFormatted}
+              </span>
+              <span className="text-xs font-mono font-bold tracking-widest text-[#FF4D00] uppercase block">
+                {canonicalSlideNames[currentSlideIndex] || `SLIDE ${slideNumberFormatted}`}
+              </span>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <span className="text-[11px] font-mono text-zinc-500 bg-[#121212] px-2.5 py-1 rounded-xs border border-white/[0.06] flex items-center space-x-1.5">
+                <Clock className="w-3 h-3 text-zinc-400" />
+                <span>~{currentSlide.durationSeconds || 30}s</span>
+              </span>
+
+              <button
+                onClick={isEditing ? handleSaveEdit : handleStartEdit}
+                className="text-xs font-mono text-zinc-400 hover:text-white bg-[#141414] hover:bg-[#1A1A1A] border border-white/[0.08] px-2.5 py-1 rounded-xs flex items-center space-x-1 transition-colors"
+              >
+                {isEditing ? <Check className="w-3 h-3 text-emerald-400" /> : <Edit3 className="w-3 h-3" />}
+                <span>{isEditing ? 'DONE' : 'EDIT'}</span>
+              </button>
+            </div>
           </div>
 
-          <div className="space-y-2 pt-1">
-            {deck.slides.map((s, idx) => {
-              const isSelected = idx === currentSlideIndex;
-              return (
-                <button
-                  key={s.slideNumber}
-                  onClick={() => {
-                    setCurrentSlideIndex(idx);
-                    setIsEditing(false);
-                  }}
-                  className={`w-full text-left p-2.5 rounded-xl border transition-all text-xs flex flex-col justify-between ${
-                    isSelected
-                      ? 'bg-indigo-950/60 border-indigo-500/80 shadow-md text-white'
-                      : 'bg-slate-900/60 border-slate-800/80 hover:border-slate-700 text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-mono text-[10px] font-bold text-indigo-400">
-                      #{s.slideNumber}
-                    </span>
-                    <span className="text-[10px] text-slate-500">
-                      {s.durationSeconds}s
-                    </span>
-                  </div>
-                  <span className="font-semibold truncate block">
-                    {s.title}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* 16:9 Presentation Canvas */}
-        <div className="lg:col-span-3 space-y-4">
-          <div className="relative aspect-[16/9] w-full rounded-2xl bg-gradient-to-br from-[#0D121F] via-[#10172A] to-[#0A0E18] border border-slate-700/80 p-8 sm:p-12 shadow-2xl flex flex-col justify-between overflow-hidden group">
-            {/* Slide Header & Objective */}
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-[11px] font-black uppercase tracking-widest text-indigo-400 bg-indigo-950/60 border border-indigo-500/30 px-3 py-1 rounded-full">
-                  SLIDE {currentSlide.slideNumber} • {currentSlide.objective}
-                </span>
-
-                <div className="flex items-center space-x-1.5 text-xs text-slate-400 font-mono">
-                  <Clock className="w-3.5 h-3.5 text-slate-500" />
-                  <span>~{currentSlide.durationSeconds}s speaking time</span>
-                </div>
-              </div>
-
-              {/* Title */}
-              {isEditing ? (
+          {/* Slide Center Hero Editorial Typography */}
+          <div className="my-8 max-w-3xl">
+            {isEditing ? (
+              <div className="space-y-3">
                 <input
                   type="text"
                   value={editedTitle}
                   onChange={(e) => setEditedTitle(e.target.value)}
-                  className="w-full text-2xl sm:text-3xl font-black text-white bg-slate-800/90 border border-slate-700 rounded-lg p-2 focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-[#121212] border border-[#FF4D00]/50 rounded-xs px-4 py-2.5 text-lg font-bold text-white focus:outline-none"
                 />
-              ) : (
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
-                  {currentSlide.title}
-                </h3>
-              )}
-            </div>
-
-            {/* Split Content: Key Points & Visual Mockup */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 my-4">
-              {/* Left: Key Points */}
-              <div className="space-y-3">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                  Key Takeaways
-                </span>
-
-                {isEditing ? (
-                  <textarea
-                    rows={4}
-                    value={editedKeyPoints}
-                    onChange={(e) => setEditedKeyPoints(e.target.value)}
-                    className="w-full text-xs text-slate-200 bg-slate-800/90 border border-slate-700 rounded-lg p-2.5 focus:outline-none focus:border-indigo-500"
-                  />
-                ) : (
-                  <ul className="space-y-2.5">
-                    {currentSlide.keyPoints.map((kp, idx) => (
-                      <li key={idx} className="flex items-start space-x-2.5 text-xs sm:text-sm text-slate-200 font-medium">
-                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-2 shrink-0" />
-                        <span className="leading-relaxed">{kp}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                <textarea
+                  value={editedKeyPoints}
+                  onChange={(e) => setEditedKeyPoints(e.target.value)}
+                  rows={4}
+                  className="w-full bg-[#121212] border border-white/[0.1] rounded-xs p-3 text-xs text-zinc-200 font-mono focus:outline-none"
+                  placeholder="Bullet points (one per line)"
+                />
               </div>
+            ) : (
+              <div className="space-y-6">
+                <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                  &ldquo;{currentSlide.title}&rdquo;
+                </h2>
 
-              {/* Right: Visual Recommendation Container */}
-              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800/90 flex flex-col justify-between">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 flex items-center space-x-1.5 mb-2">
-                    <Sparkles className="w-3 h-3" />
-                    <span>Visual Recommendation</span>
-                  </span>
-                  <p className="text-xs text-slate-300 italic leading-relaxed">
-                    &ldquo;{currentSlide.visualSuggestion}&rdquo;
-                  </p>
+                <div className="space-y-3">
+                  {currentSlide.keyPoints.map((point, idx) => (
+                    <div key={idx} className="flex items-start space-x-3">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D00] mt-2 shrink-0 shadow-flame-sm" />
+                      <p className="text-sm sm:text-base text-zinc-300 font-normal leading-relaxed">
+                        {point}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-500">
-                  <span>PitchForge Layout Engine</span>
-                  <span className="font-mono">16:9 Standard</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Slide Navigation Controls */}
-            <div className="flex items-center justify-between pt-4 border-t border-slate-800/80">
-              <div className="flex items-center space-x-2">
-                {isEditing ? (
-                  <button
-                    onClick={handleSaveEdit}
-                    className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 flex items-center space-x-1 shadow-sm"
-                  >
-                    <Check className="w-3.5 h-3.5" />
-                    <span>Save Edits</span>
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleStartEdit}
-                    className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center space-x-1 transition-colors"
-                  >
-                    <Edit3 className="w-3.5 h-3.5" />
-                    <span>Edit Slide</span>
-                  </button>
-                )}
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={handlePrev}
-                  disabled={currentSlideIndex === 0}
-                  className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white disabled:opacity-30 transition-colors"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-                <span className="text-xs font-mono text-slate-400">
-                  {currentSlideIndex + 1} / {deck.slides.length}
-                </span>
-                <button
-                  onClick={handleNext}
-                  disabled={currentSlideIndex === deck.slides.length - 1}
-                  className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white disabled:opacity-30 transition-colors"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Speaker Script Collapsible Callout under slide */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center space-x-1.5">
-                <Mic2 className="w-3.5 h-3.5" />
-                <span>Slide Speaker Script</span>
-              </span>
-              {currentSlide.deliveryNotes && (
-                <span className="text-[11px] text-slate-400">
-                  Delivery: <strong className="text-white">{currentSlide.deliveryNotes.tone}</strong> (Energy: {currentSlide.deliveryNotes.energy})
-                </span>
-              )}
-            </div>
-
-            <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-serif">
-              &ldquo;{currentSlide.speakerScript}&rdquo;
-            </p>
-
-            {currentSlide.deliveryNotes?.pauseAfter && (
-              <div className="mt-3 pt-2 border-t border-slate-800/80 flex items-center space-x-2 text-[11px] text-amber-300/90 font-mono">
-                <span>⏱ Coach tip:</span>
-                <span>Pause after &ldquo;{currentSlide.deliveryNotes.pauseAfter}&rdquo;</span>
               </div>
             )}
           </div>
+
+          {/* Slide Bottom Bar with Speaker Notes Snippet & Navigation */}
+          <div className="pt-6 border-t border-white/[0.06] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="max-w-xl">
+              <span className="text-[10px] font-mono uppercase font-bold tracking-wider text-zinc-500 block mb-1">
+                SPEAKER SCRIPT SNIPPET:
+              </span>
+              <p className="text-xs text-zinc-400 italic line-clamp-2">
+                &ldquo;{currentSlide.speakerScript}&rdquo;
+              </p>
+            </div>
+
+            <div className="flex items-center space-x-2 shrink-0">
+              <button
+                onClick={handlePrev}
+                disabled={currentSlideIndex === 0}
+                className="p-2 rounded-xs bg-[#121212] hover:bg-[#1A1A1A] border border-white/[0.08] text-white disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                title="Previous Slide"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+
+              <span className="text-xs font-mono font-bold text-white px-2">
+                {currentSlideIndex + 1} / {deck.slides.length}
+              </span>
+
+              <button
+                onClick={handleNext}
+                disabled={currentSlideIndex === deck.slides.length - 1}
+                className="p-2 rounded-xs bg-[#121212] hover:bg-[#1A1A1A] border border-white/[0.08] text-white disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                title="Next Slide"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 10-SLIDE EDITORIAL THUMBNAIL DECK SELECTOR */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-mono uppercase font-bold tracking-widest text-zinc-400">
+            ALL 10 PITCH CARDS
+          </span>
+          <span className="text-[11px] font-mono text-zinc-500">
+            CLICK CARD TO JUMP
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+          {deck.slides.map((s, idx) => {
+            const isSelected = idx === currentSlideIndex;
+            const num = String(idx + 1).padStart(2, '0');
+            const canonicalLabel = canonicalSlideNames[idx] || `SLIDE ${num}`;
+
+            return (
+              <button
+                key={s.slideNumber || idx}
+                onClick={() => {
+                  setCurrentSlideIndex(idx);
+                  setIsEditing(false);
+                }}
+                className={`p-3.5 rounded-xs text-left transition-all relative overflow-hidden flex flex-col justify-between h-28 border ${
+                  isSelected 
+                    ? 'bg-[#141414] border-[#FF4D00] shadow-flame-sm' 
+                    : 'bg-[#101010] border-white/[0.06] hover:border-white/[0.15] opacity-75 hover:opacity-100'
+                }`}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <span className={`text-xs font-mono font-black ${isSelected ? 'text-[#FF4D00]' : 'text-zinc-500'}`}>
+                    {num}
+                  </span>
+                  {isSelected && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D00] animate-ping" />
+                  )}
+                </div>
+
+                <div className="space-y-0.5">
+                  <span className="text-[9px] font-mono tracking-wider uppercase text-zinc-400 block truncate">
+                    {canonicalLabel.replace(/^\d+\s*/, '')}
+                  </span>
+                  <p className="text-[11px] font-bold text-white line-clamp-2 leading-tight">
+                    {s.title}
+                  </p>
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

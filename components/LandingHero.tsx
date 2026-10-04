@@ -6,15 +6,13 @@ import {
   Sparkles, 
   Play, 
   BrainCircuit, 
-  Layers, 
-  ShieldAlert, 
-  Mic2, 
-  Presentation, 
   Flame, 
   BarChart3, 
-  FileText,
-  CheckCircle,
-  HelpCircle
+  Presentation, 
+  ShieldAlert, 
+  ExternalLink,
+  Layers,
+  ChevronRight
 } from 'lucide-react';
 
 interface LandingHeroProps {
@@ -24,192 +22,217 @@ interface LandingHeroProps {
 
 export function LandingHero({ onStartBuilding, onSeeDemo }: LandingHeroProps) {
   const pipeline = [
-    { title: 'YOUR IDEA', subtitle: 'Raw Problem', color: 'from-amber-400 to-amber-600' },
-    { title: 'MIRO BOARD', subtitle: 'Visual Context', color: 'from-yellow-400 to-amber-500' },
-    { title: 'QWEN REASONING', subtitle: 'Multi-turn Audit', color: 'from-purple-500 to-indigo-600' },
-    { title: 'PITCH ANALYSIS', subtitle: 'Readiness & Flaws', color: 'from-blue-500 to-cyan-500' },
-    { title: 'PRESENTATION', subtitle: '10-Slide Deck', color: 'from-indigo-500 to-violet-500' },
-    { title: 'SCRIPT + AUDIO', subtitle: 'Speaker Coach', color: 'from-emerald-500 to-teal-600' },
-    { title: 'JUDGE Q&A', subtitle: 'Aggressive Defense', color: 'from-rose-500 to-red-600' },
-  ];
-
-  const features = [
-    {
-      title: 'AI Idea Analysis',
-      desc: 'Qwen extracts pain points, assumptions, and risks directly from your Miro canvas.',
-      icon: BrainCircuit,
-      color: 'text-indigo-400',
-      badge: 'Reasoning Engine',
-    },
-    {
-      title: 'Pitch Readiness Score',
-      desc: '0–100 calibrated score auditing problem clarity, differentiation, and empirical proof.',
-      icon: BarChart3,
-      color: 'text-emerald-400',
-      badge: 'Grounded Metrics',
-    },
-    {
-      title: 'Attack My Pitch',
-      desc: 'Aggressive skeptic mode hunting unsupported claims, platform risks, and weak assumptions.',
-      icon: Flame,
-      color: 'text-rose-400',
-      badge: 'Signature Feature',
-    },
-    {
-      title: 'Slide & PPTX Generator',
-      desc: 'Production-ready 10-slide decks with visuals, objectives, and instant PPTX export.',
-      icon: Presentation,
-      color: 'text-amber-400',
-      badge: 'Slide Studio',
-    },
-    {
-      title: 'Speaker Coach',
-      desc: 'Slide-by-slide teleprompter scripts with delivery tone, energy, pauses, and WPM.',
-      icon: Mic2,
-      color: 'text-cyan-400',
-      badge: 'Rehearsal Mode',
-    },
-    {
-      title: 'AI Judge Room',
-      desc: 'Simulate skeptical hackathon judges across 10 dimensions with grounded answers.',
-      icon: ShieldAlert,
-      color: 'text-purple-400',
-      badge: 'Q&A Prep',
-    },
-    {
-      title: 'Audio Pitch Narration',
-      desc: 'Synchronized text-to-speech rehearsal matching spoken slide timing and rhythm.',
-      icon: Sparkles,
-      color: 'text-pink-400',
-      badge: 'Audio Studio',
-    },
-    {
-      title: 'Executive Summary',
-      desc: '1-page investor and hackathon briefing ready for 1-click clipboard or markdown export.',
-      icon: FileText,
-      color: 'text-teal-400',
-      badge: '1-Page Brief',
-    },
+    { num: '01', title: 'MIRO CANVAS', subtitle: 'Sticky Notes & Visual Context' },
+    { num: '02', title: 'BOARD INTELLIGENCE', subtitle: 'AST & Topology Normalization' },
+    { num: '03', title: 'QWEN REASONING', subtitle: 'Deductive Thesis & Proof Audit' },
+    { num: '04', title: 'ATTACK MODE', subtitle: 'Skeptical Vulnerability Scan' },
+    { num: '05', title: 'PITCH DECK', subtitle: '10-Slide Investor Deck' },
+    { num: '06', title: 'JUDGE DEFENSE', subtitle: 'Anticipated Hostile Q&A' },
   ];
 
   return (
-    <div className="relative overflow-hidden pt-12 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      {/* Glow Backdrops */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-gradient-to-tr from-indigo-600/20 via-purple-600/15 to-transparent blur-[120px] pointer-events-none -z-10" />
-      <div className="absolute top-1/3 right-10 w-[350px] h-[350px] bg-amber-500/10 blur-[100px] pointer-events-none -z-10" />
+    <div className="relative overflow-hidden pt-10 sm:pt-16 pb-28 px-4 sm:px-8 max-w-7xl mx-auto">
+      {/* Subtle Orange/Red Atmospheric Glows */}
+      <div className="absolute top-12 left-1/4 -translate-x-1/2 w-[700px] h-[500px] bg-gradient-to-br from-[#FF4D00]/12 via-[#FF2D00]/05 to-transparent blur-[130px] pointer-events-none -z-10" />
+      <div className="absolute top-48 right-[-100px] w-[500px] h-[500px] bg-gradient-to-bl from-[#FF6A00]/10 via-[#FF4D00]/03 to-transparent blur-[110px] pointer-events-none -z-10" />
 
       {/* Hero Badge */}
-      <div className="flex justify-center mb-6">
-        <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-slate-900/90 to-indigo-950/70 border border-indigo-500/30 px-3.5 py-1.5 rounded-full text-xs text-indigo-300 shadow-lg shadow-indigo-950/40">
-          <span className="flex h-2 w-2 rounded-full bg-amber-400 animate-ping" />
-          <span className="font-semibold text-white">Miro + Qwen Orchestration</span>
-          <span className="text-slate-400">•</span>
-          <span>From Sticky Notes to Investor Defense</span>
-        </div>
+      <div className="flex items-center space-x-3 mb-8">
+        <span className="inline-flex items-center space-x-2 bg-[#111111] border border-white/[0.08] px-3.5 py-1.5 rounded-xs text-[11px] font-mono tracking-widest text-zinc-300">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D00] animate-ping" />
+          <span className="text-white font-bold">PITCHFORGE</span>
+          <span className="text-zinc-600">•</span>
+          <span className="text-[#FF6A00]">AI PITCH WAR ROOM</span>
+        </span>
+        <span className="hidden sm:inline text-[11px] font-mono tracking-wider text-zinc-500 uppercase">
+          [ MIRO CANVASES → INVESTOR-READY PACKAGES ]
+        </span>
       </div>
 
-      {/* Main Hero Header */}
-      <div className="text-center max-w-4xl mx-auto">
-        <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-[1.12]">
-          Turn your idea into a pitch that{' '}
-          <span className="gradient-text-qwen">survives the questions.</span>
-        </h1>
-        <p className="mt-6 text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed">
-          Connect your Miro workspace, let Qwen challenge your idea, expose weak assumptions, and generate your complete battle-tested pitch package.
-        </p>
+      {/* Asymmetric Hero Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        {/* Left Column: Oversized Editorial Typography */}
+        <div className="lg:col-span-7 space-y-6">
+          <h1 className="text-5xl sm:text-7xl xl:text-8xl font-black tracking-tightest text-white leading-[0.92] uppercase font-sans">
+            TURN<br />
+            IDEAS<br />
+            INTO<br />
+            <span className="gradient-text-flame">PITCHES.</span>
+          </h1>
 
-        {/* CTA Buttons */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <button
-            onClick={onStartBuilding}
-            className="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-500 hover:to-violet-500 shadow-xl shadow-indigo-600/25 flex items-center justify-center space-x-2 text-base transition-all hover:scale-[1.02] active:scale-[0.98]"
-          >
-            <span>Start Building</span>
-            <ArrowRight className="w-5 h-5" />
-          </button>
+          <p className="text-base sm:text-lg text-zinc-400 max-w-xl font-normal leading-relaxed pt-2">
+            Turn your Miro board into a pitch that can survive the room.
+            Qwen audits your problem, attacks weak assumptions, and builds the complete pitch deck, speaker script, and hostile judge defense.
+          </p>
 
-          <button
-            onClick={onSeeDemo}
-            className="w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-slate-200 bg-slate-800/80 hover:bg-slate-700/90 border border-slate-700 flex items-center justify-center space-x-2.5 text-base transition-all hover:border-amber-500/50 hover:text-white"
-          >
-            <Play className="w-4 h-4 text-amber-400 fill-amber-400" />
-            <span>See Demo (AI Bug Triage Agent)</span>
-          </button>
+          {/* Action CTAs */}
+          <div className="pt-4 flex flex-wrap items-center gap-3 sm:gap-4">
+            <button
+              onClick={onStartBuilding}
+              className="btn-flame px-7 py-3.5 rounded-xs text-xs sm:text-sm font-extrabold tracking-wider uppercase flex items-center space-x-2"
+            >
+              <span>✦ Generate Pitch</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={onSeeDemo}
+              className="px-6 py-3.5 rounded-xs text-xs sm:text-sm font-mono font-medium text-white bg-[#121212] hover:bg-[#181818] border border-white/[0.1] hover:border-[#FF4D00]/40 flex items-center space-x-2 transition-all shadow-card"
+            >
+              <Play className="w-3.5 h-3.5 text-[#FF6A00] fill-[#FF6A00]" />
+              <span>See Demo (AI Bug Triage)</span>
+            </button>
+
+            <a
+              href="https://miro.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-3.5 rounded-xs text-xs sm:text-sm font-mono text-zinc-400 hover:text-white bg-transparent hover:bg-white/[0.04] border border-white/[0.06] flex items-center space-x-1.5 transition-colors"
+            >
+              <span>↗ Open Miro</span>
+            </a>
+          </div>
+
+          {/* Micro Meta */}
+          <div className="pt-2 flex items-center space-x-4 text-[11px] font-mono text-zinc-500">
+            <span>• 10-Slide Deck</span>
+            <span>• Defense Q&A</span>
+            <span>• Real Miro Write-Back</span>
+          </div>
         </div>
 
-        <p className="mt-3.5 text-xs text-slate-400">
-          Works instantly out-of-the-box in demo mode • No API keys required to experience the full flow
-        </p>
-      </div>
+        {/* Right Column: Layered Editorial War-Room Preview */}
+        <div className="lg:col-span-5 relative">
+          <div className="relative mx-auto max-w-md lg:max-w-none">
+            {/* Background Studio Grid Panel */}
+            <div className="studio-panel p-6 rounded-xs border border-white/[0.08] shadow-card relative overflow-hidden bg-grid-editorial">
+              {/* Top Accent Line */}
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#FF6A00] via-[#FF4D00] to-transparent" />
 
-      {/* Visual Pipeline Section */}
-      <div className="mt-16 sm:mt-20">
-        <div className="text-center mb-6">
-          <h3 className="text-xs uppercase tracking-widest font-bold text-slate-400">
-            The PitchForge Orchestration Pipeline
-          </h3>
-        </div>
-
-        <div className="glass-panel p-6 rounded-2xl border border-slate-800 shadow-2xl">
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
-            {pipeline.map((item, idx) => (
-              <div
-                key={item.title}
-                className="relative bg-slate-900/70 border border-slate-800 p-3.5 rounded-xl flex flex-col items-center text-center group hover:border-slate-700 transition-colors"
-              >
-                <div className={`w-8 h-8 rounded-lg bg-gradient-to-tr ${item.color} flex items-center justify-center text-xs font-bold text-white mb-2 shadow-md`}>
-                  {idx + 1}
+              {/* Panel Header */}
+              <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 rounded-full bg-[#FF4D00] animate-pulse" />
+                  <span className="text-[10px] font-mono tracking-widest text-zinc-300 uppercase font-bold">
+                    PITCH READINESS AUDIT
+                  </span>
                 </div>
-                <span className="text-xs font-bold text-slate-200 tracking-tight">
-                  {item.title}
-                </span>
-                <span className="text-[11px] text-slate-400 mt-0.5">
-                  {item.subtitle}
-                </span>
+                <span className="text-[10px] font-mono text-zinc-500">LIVE FEED</span>
               </div>
-            ))}
+
+              {/* Pitch Readiness Circular Gauge */}
+              <div className="py-5 flex items-center justify-between">
+                <div>
+                  <div className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                    Total Readiness
+                  </div>
+                  <div className="flex items-baseline space-x-1 mt-0.5">
+                    <span className="text-4xl sm:text-5xl font-black font-sans text-white tracking-tight">
+                      86
+                    </span>
+                    <span className="text-sm font-mono text-[#FF4D00] font-bold">
+                      /100
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-emerald-400 font-mono mt-1">
+                    ✓ Defensible in Room
+                  </div>
+                </div>
+
+                {/* Circular Gauge Graphic */}
+                <div className="relative w-20 h-20 flex items-center justify-center">
+                  <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                    <path
+                      className="text-zinc-800"
+                      strokeWidth="3.5"
+                      stroke="currentColor"
+                      fill="none"
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                    <path
+                      className="text-[#FF4D00]"
+                      strokeDasharray="86, 100"
+                      strokeWidth="3.5"
+                      strokeLinecap="round"
+                      stroke="currentColor"
+                      fill="none"
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                  </svg>
+                  <span className="absolute text-xs font-mono font-bold text-white">86%</span>
+                </div>
+              </div>
+
+              {/* AI Strategist Card */}
+              <div className="p-3.5 rounded-xs bg-[#0A0A0A] border border-white/[0.08] space-y-2 mt-2">
+                <div className="flex items-center justify-between text-[10px] font-mono">
+                  <span className="text-[#FF6A00] font-bold tracking-wider uppercase">
+                    AI STRATEGIST
+                  </span>
+                  <span className="text-zinc-400">CONFIDENCE 91%</span>
+                </div>
+                <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                  &ldquo;Your strongest argument is the 4.2h triage reduction. Anchor your opening hook on engineering burnout before presenting architecture.&rdquo;
+                </p>
+              </div>
+
+              {/* Attack Weakness Fragment */}
+              <div className="mt-3 p-3 rounded-xs bg-red-950/20 border border-red-500/20 flex items-start space-x-2.5">
+                <Flame className="w-4 h-4 text-[#FF2D00] shrink-0 mt-0.5" />
+                <div className="text-[11px] text-zinc-300">
+                  <span className="text-[#FF2D00] font-bold font-mono">ATTACK AUDIT:</span> What prevents Jira or Linear from copying this in 6 months?
+                </div>
+              </div>
+            </div>
+
+            {/* Floating Miro Sticky Note Fragment */}
+            <div className="absolute -bottom-6 -left-6 sm:-left-8 bg-[#FFD02F] text-[#050038] p-3.5 rounded-xs shadow-2xl max-w-[200px] border border-yellow-300/40 rotate-[-3deg] hidden sm:block">
+              <span className="text-[9px] font-mono uppercase font-bold tracking-wider opacity-75 block mb-1">
+                MIRO STICKY NOTE
+              </span>
+              <p className="text-xs font-bold leading-tight">
+                &ldquo;Engineering teams waste 4.2h triaging bug reports.&rdquo;
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Feature Cards Grid */}
-      <div className="mt-20">
-        <div className="text-center mb-10">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-            Everything your team needs to face the judges
-          </h2>
-          <p className="mt-2 text-sm text-slate-400">
-            PitchForge doesn&apos;t just write a script. It tests your thesis against skeptical counterarguments.
-          </p>
+      {/* Editorial Orchestration Pipeline */}
+      <div className="mt-24 pt-12 border-t border-white/[0.06]">
+        <div className="flex items-baseline justify-between mb-8">
+          <div>
+            <h2 className="text-xs font-mono font-bold tracking-widest text-[#FF4D00] uppercase">
+              ORCHESTRATION PIPELINE
+            </h2>
+            <p className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight mt-1">
+              From Raw Miro Board to War-Room Defense
+            </p>
+          </div>
+          <span className="text-xs font-mono text-zinc-500 hidden sm:block">
+            6 STAGE PROTOCOL
+          </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {features.map((f) => {
-            const Icon = f.icon;
-            return (
-              <div
-                key={f.title}
-                className="glass-card p-5 rounded-xl flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="p-2.5 rounded-lg bg-slate-800/80 border border-slate-700/50">
-                      <Icon className={`w-5 h-5 ${f.color}`} />
-                    </div>
-                    <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700/60">
-                      {f.badge}
-                    </span>
-                  </div>
-                  <h3 className="text-base font-bold text-slate-100">
-                    {f.title}
-                  </h3>
-                  <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-                    {f.desc}
-                  </p>
-                </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          {pipeline.map((item) => (
+            <div
+              key={item.num}
+              className="studio-card p-4 rounded-xs border border-white/[0.06] flex flex-col justify-between group hover:border-[#FF4D00]/40 transition-colors"
+            >
+              <div>
+                <span className="text-xs font-mono font-black text-[#FF4D00]">
+                  {item.num}
+                </span>
+                <h3 className="text-xs font-mono font-bold text-white uppercase mt-2 tracking-wide">
+                  {item.title}
+                </h3>
               </div>
-            );
-          })}
+              <p className="text-[11px] text-zinc-400 mt-2 leading-snug">
+                {item.subtitle}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

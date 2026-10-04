@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { miroClient } from '@/services/miro/miroClient';
 import { getMiroTokenDetails } from '@/services/miro/tokenStore';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   const isConfigured = miroClient.isConfigured();
   const tokenDetails = getMiroTokenDetails();

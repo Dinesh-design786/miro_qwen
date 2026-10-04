@@ -16,9 +16,31 @@ export class MiroClient {
   private redirectUrl: string;
 
   constructor(config?: MiroConfig) {
-    this.clientId = config?.clientId || process.env.MIRO_CLIENT_ID || '3458764685921914585';
-    this.clientSecret = config?.clientSecret || process.env.MIRO_CLIENT_SECRET || 'PcBeQohwuS1x2ngnroQU6QenjdTt8rgk';
+    this.clientId = config?.clientId || process.env.MIRO_CLIENT_ID || '';
+    this.clientSecret = config?.clientSecret || process.env.MIRO_CLIENT_SECRET || '';
     this.redirectUrl = config?.redirectUrl || process.env.MIRO_REDIRECT_URL || 'http://localhost:3000/api/miro/oauth/callback';
+  }
+
+  public validateConfig(): { valid: boolean; errors: string[] } {
+    const errors: string[] = [];
+    if (!this.clientId) errors.push('MIRO_CLIENT_ID is missing');
+    if (!this.clientSecret) errors.push('MIRO_CLIENT_SECRET is missing');
+    if (!this.redirectUrl) errors.push('MIRO_REDIRECT_URL is missing');
+
+    // Safe diagnostic logging (NEVER print secrets or tokens)
+    console.log('[PitchForge Miro Diagnostic]');
+    console.log('  OAuth redirect URI:', this.redirectUrl);
+    console.log('  Client ID configured:', Boolean(this.clientId));
+    console.log('  Client secret configured:', Boolean(this.clientSecret));
+
+    return {
+      valid: errors.length === 0,
+      errors,
+    };
+  }
+
+  public hasCredentials(): boolean {
+    return Boolean(this.clientId && this.clientSecret);
   }
 
   public getAccessToken(): string | null {
@@ -31,24 +53,54 @@ export class MiroClient {
   }
 
   public getOAuthAuthorizeUrl(state?: string): string {
+    const redirectUri = process.env.MIRO_REDIRECT_URL || this.redirectUrl;
+    
+    // Validate credentials existence
+    if (!this.clientId) {
+      throw new Error('MIRO_CONFIG_ERROR: MIRO_CLIENT_ID is not configured in environment variables.');
+    }
+
     const params = new URLSearchParams({
       response_type: 'code',
       client_id: this.clientId,
-      redirect_uri: this.redirectUrl,
+      redirect_uri: redirectUri,
+      scope: 'boards:read boards:write',
     });
     if (state) {
       params.append('state', state);
     }
+
+    console.log('[PitchForge Miro OAuth] Generated Miro authorization URL');
+    console.log('  OAuth redirect URI:', redirectUri);
+    console.log('  Client ID configured:', Boolean(this.clientId));
+    console.log('  Requested scopes: boards:read boards:write');
+
     return `https://miro.com/oauth/authorize?${params.toString()}`;
   }
 
   public async exchangeCodeForToken(code: string): Promise<MiroTokenData> {
+    const redirectUri = process.env.MIRO_REDIRECT_URL || this.redirectUrl;
+
+    console.log('[PitchForge Miro OAuth Diagnostic]');
+    console.log('  Callback reached: true');
+    console.log('  Authorization code received:', Boolean(code));
+    console.log('  OAuth redirect URI:', redirectUri);
+    console.log('  Client ID configured:', Boolean(this.clientId));
+    console.log('  Client secret configured:', Boolean(this.clientSecret));
+
+    if (!code) {
+      throw new Error('Missing authorization code');
+    }
+    if (!this.clientId || !this.clientSecret) {
+      throw new Error('Miro integration is not configured. Missing MIRO_CLIENT_ID or MIRO_CLIENT_SECRET.');
+    }
+
     const params = new URLSearchParams({
       grant_type: 'authorization_code',
       client_id: this.clientId,
       client_secret: this.clientSecret,
       code,
-      redirect_uri: this.redirectUrl,
+      redirect_uri: redirectUri,
     });
 
     const res = await fetch(this.oauthUrl, {
@@ -61,10 +113,12 @@ export class MiroClient {
 
     if (!res.ok) {
       const errText = await res.text();
+      console.error('[PitchForge Miro OAuth] Token exchange: failure. Miro status:', res.status);
       throw new Error(`Miro OAuth token exchange failed (${res.status}): ${errText}`);
     }
 
     const data = await res.json();
+    console.log('[PitchForge Miro OAuth] Token exchange: success');
     saveMiroToken(data);
     return data;
   }
@@ -135,9 +189,15 @@ export class MiroClient {
     return this.request(`/boards/${encodeURIComponent(boardId)}`);
   }
 
-  public async fetchBoards(): Promise<any[]> {
-    const data = await this.request('/boards?limit=20');
-    return data.data || [];
+  public async fetchBoards(): Promise<{ id: string; name: string; description: string; viewLink: string }[]> {
+    const data = await this.request('/boards?limit=50');
+    const rawBoards = data.data || [];
+    return rawBoards.map((b: any) => ({
+      id: b.id,
+      name: b.name || 'Untitled Board',
+      description: b.description || '',
+      viewLink: b.viewLink || `https://miro.com/app/board/${b.id}/`,
+    }));
   }
 
   public async fetchBoardItems(boardId: string, limit = 50): Promise<any[]> {
