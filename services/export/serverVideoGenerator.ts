@@ -70,13 +70,25 @@ async function ensureLocalImage(url: string, targetPath: string, fallbackPath: s
 }
 
 /**
+ * Resolves the real path to the FFmpeg binary in both development and production Next.js bundles.
+ */
+export function getFfmpegBinaryPath(): string {
+  if (ffmpegPath && fs.existsSync(ffmpegPath)) {
+    return ffmpegPath;
+  }
+  const nmPath = path.join(process.cwd(), 'node_modules', 'ffmpeg-static', process.platform === 'win32' ? 'ffmpeg.exe' : 'ffmpeg');
+  if (fs.existsSync(nmPath)) {
+    return nmPath;
+  }
+  return 'ffmpeg';
+}
+
+/**
  * Server-side video generator that builds an MP4 with 10 synchronized slide scenes,
  * speaker narration audio, PitchForge dark/orange editorial styling, and subtitles.
  */
 export async function generatePitchVideo(rawPitch: any, customSpeakerScript?: string): Promise<VideoGenerationResult> {
-  if (!ffmpegPath) {
-    throw new Error('FFmpeg binary is not available. Please install ffmpeg-static.');
-  }
+  const binaryPath = getFfmpegBinaryPath();
 
   const deck: CanonicalPitchDeck = validateAndNormalizePitch(rawPitch);
 
@@ -92,7 +104,7 @@ export async function generatePitchVideo(rawPitch: any, customSpeakerScript?: st
   if (!fs.existsSync(fallbackImg)) {
     fallbackImg = path.join(tmpDir, 'fallback_dark.jpg');
     // Generate solid dark fallback if needed
-    execSync(`"${ffmpegPath}" -y -f lavfi -i color=c=0x080808:s=1920x1080 -vframes 1 "${fallbackImg}"`, { stdio: 'ignore' });
+    execSync(`"${binaryPath}" -y -f lavfi -i color=c=0x080808:s=1920x1080 -vframes 1 "${fallbackImg}"`, { stdio: 'ignore' });
   }
 
   const clipPaths: string[] = [];
@@ -160,11 +172,11 @@ export async function generatePitchVideo(rawPitch: any, customSpeakerScript?: st
 
       // 6. Encode slide clip
       if (audioGenerated) {
-        const renderCmd = `"${ffmpegPath}" -y -loop 1 -i "${resolvedImgPath}" -i "${wavPath}" -c:v libx264 -preset ultrafast -tune stillimage -c:a aac -b:a 128k -pix_fmt yuv420p -vf "${vf}" -t ${duration.toFixed(2)} -shortest "${clipPath}"`;
+        const renderCmd = `"${binaryPath}" -y -loop 1 -i "${resolvedImgPath}" -i "${wavPath}" -c:v libx264 -preset ultrafast -tune stillimage -c:a aac -b:a 128k -pix_fmt yuv420p -vf "${vf}" -t ${duration.toFixed(2)} -shortest "${clipPath}"`;
         execSync(renderCmd, { stdio: 'ignore' });
       } else {
         // Fallback: silent audio track if audio wasn't generated
-        const renderCmd = `"${ffmpegPath}" -y -loop 1 -i "${resolvedImgPath}" -f lavfi -i anullsrc=r=44100:cl=stereo -c:v libx264 -preset ultrafast -tune stillimage -c:a aac -b:a 128k -pix_fmt yuv420p -vf "${vf}" -t ${duration.toFixed(2)} -shortest "${clipPath}"`;
+        const renderCmd = `"${binaryPath}" -y -loop 1 -i "${resolvedImgPath}" -f lavfi -i anullsrc=r=44100:cl=stereo -c:v libx264 -preset ultrafast -tune stillimage -c:a aac -b:a 128k -pix_fmt yuv420p -vf "${vf}" -t ${duration.toFixed(2)} -shortest "${clipPath}"`;
         execSync(renderCmd, { stdio: 'ignore' });
       }
 
@@ -186,7 +198,7 @@ export async function generatePitchVideo(rawPitch: any, customSpeakerScript?: st
     const finalFileName = `pitchforge-${safeTitle}-${timestamp}.mp4`;
     const finalFilePath = path.join(outputDir, finalFileName);
 
-    const concatCmd = `"${ffmpegPath}" -y -f concat -safe 0 -i "${listFile}" -c copy "${finalFilePath}"`;
+    const concatCmd = `"${binaryPath}" -y -f concat -safe 0 -i "${listFile}" -c copy "${finalFilePath}"`;
     execSync(concatCmd, { stdio: 'ignore' });
 
     // 8. Validate output file (Section 16)
