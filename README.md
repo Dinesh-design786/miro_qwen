@@ -1,182 +1,303 @@
-# PitchForge — AI Pitch Studio powered by Miro + Qwen
+<p align="center">
+  <a href="https://miro.com" target="_blank">
+    <img src="https://raw.githubusercontent.com/miroapp/app-examples/main/assets/miro-logo.svg" height="52" alt="Miro" />
+  </a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/QwenLM" target="_blank">
+    <img src="https://avatars.githubusercontent.com/u/141014529?s=200&v=4" height="52" alt="Qwen AI" style="border-radius: 12px;" />
+  </a>
+</p>
 
-> **Turn your idea into a pitch that survives the questions.**  
-> PitchForge connects collaborative visual thinking in Miro with Qwen deep reasoning to expose weak assumptions, audit empirical evidence, and generate complete battle-tested pitch packages.
+<h1 align="center">PitchForge — AI Pitch Studio</h1>
 
----
+<p align="center">
+  <strong>Transform raw Miro collaborative boards into defense-hardened, investor-ready pitches that survive the room.</strong>
+</p>
 
-## 🚀 The Core Product Vision
-
-PitchForge turns a raw problem statement and Miro whiteboard into an investor-ready, defense-hardened pitch studio:
-
-$$\text{Problem} \longrightarrow \text{Miro Workspace} \longrightarrow \text{Qwen Analysis} \longrightarrow \text{Improve Idea} \longrightarrow \text{Generate Pitch} \longrightarrow \text{16:9 Deck} \longrightarrow \text{Speaker Script} \longrightarrow \text{Audio Narration} \longrightarrow \text{AI Judge Q\&A}$$
-
-### Core Loop
-$$\mathbf{THINK} \longrightarrow \mathbf{VISUALIZE} \longrightarrow \mathbf{CHALLENGE} \longrightarrow \mathbf{REFINE} \longrightarrow \mathbf{PITCH} \longrightarrow \mathbf{DEFEND}$$
-
-- **Miro**: Collaborative thinking & visual brainstorming layer.
-- **Qwen**: Deep reasoning, skepticism, critique, and narrative architecture engine.
-- **PitchForge**: Orchestration studio uniting visual structure, evidence auditing, slide generation, and spoken defense.
-
----
-
-## ✨ Features & Modules
-
-| Module | Description |
-|---|---|
-| **Miro Canvas Sync** | Ingests sticky notes, text, frames, and connectors. Normalizes spatial items into structured semantic categories. Includes rich **Demo Board mode** when credentials are absent. |
-| **Qwen Reasoning Engine** | Audits problem clarity, target customer wedge, differentiation, and empirical proof. Employs strict epistemic tagging: `[Verified evidence]`, `[Unverified claim]`, `[Assumption]`, `[Evidence needed]`. |
-| **Pitch Readiness Score (0–100)** | Calibrated across 8 dimensions (Problem, Solution, Target User, Differentiation, Evidence, Feasibility, Business, Storytelling). |
-| **🔥 Attack My Pitch** | **Signature Feature:** Skeptical VC critique hunting unbacked claims, competitive platform threats, and hallucination risks. Calculates **Pitch Survival Score** and arms spoken defenses. |
-| **Improve My Pitch** | Pinpoints the top 3 highest-impact vulnerabilities with editable interactive fixes that dynamically raise pitch readiness. |
-| **10-Slide Presentation Studio** | Generates 16:9 standard slide decks with visuals, key points, slide notes, and instant client-side **PPTX export** via `pptxgenjs`. |
-| **Speaker Coach & Teleprompter** | Slide-by-slide delivery scripts with speaking timecodes, pace (WPM), delivery tone, critical pauses, and transition cues. |
-| **Audio Pitch (TTS)** | Real-time speech synthesis synchronized with active slide cues, scrubber controls, and speed adjustments. |
-| **Pitch Video Timeline** | Multi-track composition preview combining 1080p slide frames, narration audio, lower-third subtitles, and crossfade transitions. |
-| **AI Judge Room** | Probing questions across 10 evaluation categories (Competition, Security, Scalability, Ethics, Business Model, etc.) with grounded answers and evidence-gap warnings. |
-| **1-Page Executive Summary** | High-density briefing for angel investors and judges with 1-click clipboard copy and markdown export. |
-| **Final Pitch Package** | Complete audit checklist, 3 final presentation recommendations, and 1-click package export. |
+<p align="center">
+  <a href="#-how-miro-works-in-pitchforge"><img src="https://img.shields.io/badge/Miro-REST_API_v2-FFD02F?style=for-the-badge&logo=miro&logoColor=050038" alt="Miro API" /></a>
+  <a href="#-how-qwen-ai-works-in-pitchforge"><img src="https://img.shields.io/badge/Qwen-Reasoning_Engine-6236FF?style=for-the-badge&logo=alibabacloud&logoColor=white" alt="Qwen AI" /></a>
+  <a href="#-tech-stack"><img src="https://img.shields.io/badge/Next.js_14-App_Router-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js 14" /></a>
+  <a href="#-tech-stack"><img src="https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" /></a>
+  <a href="#-tech-stack"><img src="https://img.shields.io/badge/Tailwind_CSS-Dark_Studio-0B0B0B?style=for-the-badge&logo=tailwindcss&logoColor=FF4D00" alt="Tailwind CSS" /></a>
+</p>
 
 ---
 
-## 🛠 Tech Stack & Architecture
+## 🌟 The Product Vision: The "AI Pitch War Room"
 
-- **Framework**: Next.js 14 (App Router) + React 18 + TypeScript 5
-- **Styling**: Tailwind CSS + Custom Dark Obsidian & Glassmorphism Theme
-- **Validation**: Zod schema validation for all AI JSON outputs
-- **Icons**: Lucide React
-- **Presentation Export**: PptxGenJS (Native 16:9 PPTX export with speaker notes and custom dark master layouts)
-- **Speech Synthesis**: HTML5 Web Speech API + TTS provider abstraction
+Most hackathon projects and startup pitches fail not from bad technology, but from **weak narratives, unverified empirical claims, and zero preparation for harsh judge cross-examinations**.
 
-### Directory Layout
+**PitchForge** is an AI pitch war room that bridges two superpowers:
+1. **Miro**: Where teams visually brainstorm, map user journeys, place sticky notes, and sketch architecture.
+2. **Qwen**: Alibaba Cloud's cutting-edge large language model with deep multi-step reasoning, epistemic claim auditing, and adversarial critique.
 
-```text
-├── app/
-│   ├── api/
-│   │   ├── analyze/          # Qwen pitch reasoning & evidence auditing
-│   │   ├── attack/           # "Attack My Pitch" critique engine
-│   │   ├── generate-pitch/   # 10-slide deck & Executive Summary generation
-│   │   ├── judge/            # Skeptical AI Judge simulation
-│   │   └── miro/             # Miro board extraction & normalizer
-│   ├── globals.css           # Custom dark theme, glassmorphism, glowing badges
-│   ├── layout.tsx            # Global metadata and root shell
-│   └── page.tsx              # Master interactive studio state machine
-├── components/
-│   ├── Header.tsx            # Top bar, readiness pill, quick demo loader, export
-│   ├── PipelineProgress.tsx  # Visual pipeline navigation bar
-│   ├── LandingHero.tsx       # Compelling hero, pipeline diagram, feature cards
-│   ├── ProjectCreationModal.tsx # Step 1 idea intake & sample presets
-│   ├── MiroBoardViewer.tsx   # Interactive sticky note canvas visualizer
-│   ├── AnalysisDashboard.tsx # Pitch Readiness score, breakdown, claim audits
-│   ├── ImprovementView.tsx   # 3 high-impact fixes & interactive customization
-│   ├── AttackMyPitchView.tsx # 🔥 Signature Attack My Pitch & Survival Score
-│   ├── PresentationViewer.tsx# 16:9 slide stage, key points, PPTX download
-│   ├── SpeakerCoachView.tsx  # Teleprompter, WPM counter, dramatic pause cues
-│   ├── AudioPitchView.tsx    # TTS playback with synchronized slide highlighting
-│   ├── VideoTimelineView.tsx # Multi-track video composition timeline preview
-│   ├── JudgeModeView.tsx     # 10 categories of skeptical judge questions
-│   ├── ExecutiveSummaryView.tsx # 1-page investor briefing & copy/export
-│   └── FinalPackageView.tsx  # Package checklist & bundle download
-├── data/
-│   ├── demoBoard.ts          # Realistic Miro whiteboard data (4 frames, 20 items)
-│   └── demoProject.ts        # Calibrated "AI Bug Triage Agent" demo state
-├── lib/
-│   └── utils.ts              # Styling helpers & time formatters
-├── services/
-│   ├── ai/
-│   │   ├── qwenClient.ts     # Qwen API client (DashScope / OpenAI compatible)
-│   │   ├── pitchAnalyzer.ts  # Zod-validated pitch analysis engine
-│   │   ├── pitchGenerator.ts # Slide deck and executive summary generator
-│   │   ├── pitchCritic.ts    # Attack My Pitch critique agent
-│   │   └── judgeAgent.ts     # Skeptical judge Q&A generator
-│   ├── export/
-│   │   └── pptxExport.ts     # Client & server PPTX / Markdown export
-│   ├── miro/
-│   │   ├── miroClient.ts     # Miro REST API client
-│   │   ├── boardReader.ts    # Live board fetcher with demo fallback
-│   │   └── boardParser.ts    # Sticky note and frame normalizer
-│   ├── tts/
-│   │   └── ttsService.ts     # Audio playback & speech synthesis provider
-│   └── video/
-│       └── videoRenderer.ts  # Multi-track video timeline composition
-└── types/
-    └── index.ts              # TypeScript type definitions
+PitchForge turns chaotic visual canvas thinking into a battle-tested pitch package, complete with calibrated **Pitch Readiness scores**, VC-grade **"Attack My Pitch"** defenses, a **10-slide 16:9 presentation deck**, a slide-by-slide **teleprompter speaker script**, **synchronized audio voiceovers**, and **live bidirectional Miro canvas write-back**.
+
+---
+
+## 🔄 Complete End-to-End Workflow
+
+```mermaid
+flowchart TD
+    subgraph S1["1. VISUAL INGESTION"]
+        Miro["Miro Visual Whiteboard<br/>(Sticky notes, Frames, Diagrams)"]
+        Parser["Miro Normalizer Engine<br/>(/api/miro)"]
+        Miro -->|OAuth / Direct Token| Parser
+    end
+
+    subgraph S2["2. QWEN REASONING LAB"]
+        Qwen["Qwen Reasoning Core<br/>(DashScope / ModelStudio)"]
+        Audit["Epistemic Claim Auditor<br/>[Verified | Unverified | Assumption]"]
+        Attack["🔥 Attack My Pitch Engine<br/>(Vulnerability Matrix & Defense Locks)"]
+        Parser --> Qwen
+        Qwen --> Audit
+        Qwen --> Attack
+    end
+
+    subgraph S3["3. WAR ROOM OUTPUTS"]
+        Deck["10-Slide Pitch Deck<br/>(16:9 Presentation Studio)"]
+        Coach["Speaker Teleprompter<br/>(WPM, Pauses & Tone Cues)"]
+        Judge["AI Judge Cross-Examination<br/>(10 Probing Categories)"]
+        Audit --> Deck
+        Attack --> Coach
+        Attack --> Judge
+    end
+
+    subgraph S4["4. BIDIRECTIONAL SYNC & EXPORT"]
+        MiroSync["🚀 Live Miro Write-Back<br/>(Structured 'PitchForge AI Pitch' Frame)"]
+        PPTX["Native PPTX & Markdown Bundle<br/>(PptxGenJS Export)"]
+        Deck --> MiroSync
+        Coach --> MiroSync
+        Judge --> MiroSync
+        Deck --> PPTX
+    end
+
+    style Miro fill:#FFD02F,stroke:#050038,stroke-width:2px,color:#050038
+    style Qwen fill:#6236FF,stroke:#FFFFFF,stroke-width:2px,color:#FFFFFF
+    style Attack fill:#FF4D00,stroke:#FFFFFF,stroke-width:2px,color:#FFFFFF
+    style MiroSync fill:#FFD02F,stroke:#050038,stroke-width:2px,color:#050038
 ```
 
 ---
 
-## ⚡ Quick Start & Running Locally
+## 🎨 How Miro Works in PitchForge
 
-### 1. Prerequisites
-- Node.js 18+ (tested on v24.13.1)
-- npm 9+
+Miro is not merely an external export target—it is the **visual operating system** of PitchForge.
 
-### 2. Installation
+### 1. Visual Brainstorm Ingestion
+* **What it does**: PitchForge connects directly to the user's Miro account via **Miro REST API v2**.
+* **Canvas Scanning**: Ingests sticky notes, shapes, text blocks, frames, and semantic connectors across the board.
+* **Author & Tag Resolution**: Captures author attributions and visual clustering to understand how the team structured their ideas.
+* **Smart Demo Fallback**: When users don't have active Miro credentials, PitchForge automatically loads a full-fidelity 4-frame Miro canvas simulation with realistic sticky note clusters.
+
+### 2. Spatial-to-Semantic Normalization
+* **The Problem**: Miro boards are unstructured, spatial, and nonlinear.
+* **The Solution**: PitchForge's normalizer transforms geometric coordinates `(x, y)` and sticky colors into an 8-dimensional semantic context:
+  - Problem statements & pain points
+  - Target audience & user personas
+  - Proposed technical solution
+  - Core differentiators & competitive assumptions
+  - Technical architecture dependencies
+
+### 3. Live Bidirectional Miro Write-Back
+When Qwen finishes generating and hardening the pitch, clicking **[ ✦ Send to Miro ]** writes the entire hardened pitch workspace back onto the user's active Miro board:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│  🚀 PitchForge AI Pitch (Frame: 3800 × 3600 px)                        │
+│                                                                        │
+│  [ Executive Pitch Overview Card ]                                     │
+│  • Problem Breakdown (Red Stickies)     • Proposed Solution (Cyan)     │
+│  • Target Persona (Yellow Stickies)     • Value Proposition (Orange)   │
+│                                                                        │
+│  [ Technical Architecture Pipeline Flow ]                              │
+│  [ Ingest ] ──▶ [ Normalizer ] ──▶ [ Qwen LLM ] ──▶ [ Canvas Write ]   │
+│                                                                        │
+│  [ 🔥 Attack My Pitch — Vulnerabilities & Skeptic Hardening ]          │
+│  • Vulnerability 1 (High Severity)      • Mitigation Strategy          │
+│  • Vulnerability 2 (Evidence Gap)       • Grounded Defense Proof       │
+│                                                                        │
+│  [ 🎯 AI Judge Defense Preparation ]                                   │
+│  • Skeptical Questions (Pink/Blue)      • Suggested Answers            │
+│                                                                        │
+│  [ 🎤 10-Slide Pitch Storyboard & Teleprompter Scripts ]               │
+│  • Slide 1: Hook & Pain                 • Slide 2: The Wedge           │
+│  • Slide 3: The Architecture            • ... Through Slide 10: Ask    │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+* **Version Management**: If a pitch frame already exists on the board, PitchForge automatically prompts the user to either update the existing frame or create an incremented version (`v2`, `v3`) with calculated coordinate offsets to avoid collisions.
+* **Resilient Sync**: Supports direct Miro OAuth 2.0 or 1-click **Direct Miro Access Tokens**.
+
+---
+
+## 🧠 How Qwen AI Works in PitchForge
+
+PitchForge is powered by Alibaba Cloud's **Qwen** large language model (e.g. `qwen-max`, `qwen-plus`, `qwen-turbo`), acting as an adversarial pitch strategist rather than a generic text autocomplete.
+
+### 1. Epistemic Claim Auditing
+Qwen parses every statement extracted from the Miro whiteboard and classifies it with strict epistemic rigor:
+- `[Verified evidence]`: Backed by metrics, pilot data, or benchmarks.
+- `[Unverified claim]`: High-sounding claim without empirical proof.
+- `[Assumption]`: Underlying hypothesis that could invalidate the thesis.
+- `[Evidence needed]`: Critical data points judges will demand.
+
+### 2. Pitch Readiness Scoring (0–100)
+A multi-vector calibration across 8 strategic dimensions:
+1. **Problem Clarity** (Weight: 15%)
+2. **Solution Clarity** (Weight: 15%)
+3. **Target User Precision** (Weight: 10%)
+4. **Differentiation & Moat** (Weight: 15%)
+5. **Empirical Evidence** (Weight: 15%)
+6. **Technical Feasibility** (Weight: 10%)
+7. **Business Potential / TAM** (Weight: 10%)
+8. **Narrative Storytelling** (Weight: 10%)
+
+### 3. 🔥 "Attack My Pitch" (Signature Feature)
+Simulates a hyper-skeptical Tier-1 venture capitalist or hackathon judge actively trying to poke holes in the idea:
+- Identifies critical structural flaws, defensibility gaps, and platform risks.
+- Calculates an initial **Pitch Survival Score**.
+- Allows founders to input interactive spoken defenses to harden each vulnerability and dynamically boost their survival calibration.
+
+### 4. 10-Slide Canonical Presentation Generator
+Generates a complete, narrative-driven 10-slide deck matching top startup accelerator standards:
+- `01 PROBLEM` — The acute, bleeding-neck pain point.
+- `02 INSIGHT` — Why existing solutions fail and what changed.
+- `03 SOLUTION` — The core mechanism and value proposition.
+- `04 PRODUCT` — Live workflow, UI architecture, and feature wedge.
+- `05 MARKET` — TAM / SAM / SOM and bottom-up customer wedge.
+- `06 BUSINESS MODEL` — Pricing levers, unit economics, and distribution.
+- `07 COMPETITION` — 2x2 matrix and unique technical moat.
+- `08 TECHNOLOGY` — System architecture, pipeline, and scalability.
+- `09 TRACTION` — Pilots, velocity metrics, and execution proof.
+- `10 ASK` — Funding requirement, hackathon milestone, and roadmap.
+
+---
+
+## ⚡ The AI Pitch War Room Modules
+
+| Module | What It Does |
+|---|---|
+| **Board Intelligence** | Ingests live Miro canvas elements, sticky notes, and frames into structured JSON. |
+| **Analysis Dashboard** | Displays 3-column workspace with live radial readiness gauge (`86/100`), AI Strategist insights, and evidence audits. |
+| **🔥 Attack War Room** | Unpacks critical weaknesses, platform threats, and provides defense locks to raise survival scores. |
+| **Presentation Stage** | 16:9 cinematic presentation card viewer with speaker script snippets and instant **PPTX download**. |
+| **Speaker Teleprompter** | Slide-by-slide delivery scripts with pace (WPM), tone indicators, and dramatic pause timestamps. |
+| **Audio Pitch (TTS)** | Synchronized speech synthesis with live slide tracking, scrubber controls, and speed adjustments. |
+| **AI Judge Defense** | Cross-examination questions across 10 evaluation vectors with grounded answers. |
+| **Send to Miro Modal** | 1-click write-back dialog with board selector, content checklist, and live canvas integration. |
+
+---
+
+## 🛠 Tech Stack
+
+- **Frontend & App Shell**: Next.js 14 (App Router), React 18, TypeScript 5
+- **Styling & Visual Design**: Tailwind CSS with custom **Dark Creative Agency / Digital Studio** aesthetics (`#080808` near-black background, subtle technical grid, tactical `#FF4D00` flame orange lighting)
+- **Visual Collaboration**: Miro Developer Platform REST API v2
+- **AI Reasoning**: Qwen-Max via DashScope / ModelStudio API
+- **Deck Export**: PptxGenJS (16:9 widescreen PPTX generation with speaker notes and custom themes)
+- **Audio Voiceover**: HTML5 Web Speech Synthesis API
+- **Icons**: Lucide React
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/Dinesh-design786/miro_qwen.git
+cd miro_qwen
+```
+
+### 2. Install Dependencies
 ```bash
 npm install
 ```
 
-### 3. Environment Variables (Optional)
-PitchForge works **100% out of the box** without external API keys via its intelligent built-in reasoning engine and demo Miro boards. To connect live external services, configure `.env.local`:
+### 3. Configure Environment Variables
+Create a `.env.local` file in the project root:
 
-```env
+```bash
 # Miro Workspace Integration
-MIRO_ACCESS_TOKEN=
-MIRO_CLIENT_ID=
-MIRO_CLIENT_SECRET=
-MIRO_BOARD_ID=
+MIRO_CLIENT_ID=your_miro_client_id
+MIRO_CLIENT_SECRET=your_miro_client_secret
+MIRO_REDIRECT_URL=http://localhost:3000/api/miro/oauth/callback
+MIRO_ACCESS_TOKEN=your_optional_direct_access_token
 
-# Qwen AI Provider (Alibaba Cloud DashScope or OpenAI-compatible endpoint)
-QWEN_API_KEY=
+# Qwen AI Reasoning Provider
 QWEN_MODEL=qwen-max
 QWEN_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+QWEN_API_KEY=your_qwen_api_key
 
-# TTS Audio Narration Provider
+# Audio Narration Provider
 TTS_PROVIDER=web-speech
 ```
 
-### 4. Run Development Server
+> **Note on Miro Authentication**: You can either configure OAuth credentials via the [Miro Developer Portal](https://developers.miro.com), or simply paste a direct **Miro Access Token** inside the PitchForge write-back dialog under **`[ ⚙️ ACCESS TOKEN ]`**.
+
+### 4. Run the Development Server
 ```bash
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### 5. Production Build
-```bash
-npm run build
-npm run start
+---
+
+## 📂 Project Structure
+
+```text
+├── app/
+│   ├── api/
+│   │   ├── analyze/            # Qwen pitch reasoning & evidence auditing
+│   │   ├── attack/             # "Attack My Pitch" critique engine
+│   │   ├── generate-pitch/     # 10-slide deck & Executive Summary generation
+│   │   ├── judge/              # Skeptical AI Judge cross-examination
+│   │   └── miro/               # Miro board extraction, token, status & write-back
+│   │       ├── boards/         # Active Miro board retrieval
+│   │       ├── export-pitch/   # Real Miro canvas frame & element writer
+│   │       ├── oauth/          # Miro OAuth authorization & callback
+│   │       ├── status/         # Live Miro connection health check
+│   │       └── token/          # Secure direct Miro Access Token manager
+│   ├── globals.css             # Dark creative agency design tokens & subtle grid
+│   ├── layout.tsx              # Root HTML shell & viewport metadata
+│   └── page.tsx                # Master interactive studio state machine
+├── components/
+│   ├── AnalysisDashboard.tsx   # 3-column AI pitch war room & radial gauge
+│   ├── AttackMyPitchView.tsx   # VC critique matrix & survival score locks
+│   ├── Header.tsx              # Minimal studio nav, Miro status & write-back CTA
+│   ├── LandingHero.tsx         # Oversized typography "TURN IDEAS INTO PITCHES."
+│   ├── MiroExportModal.tsx     # Write-back modal with direct token panel & checklist
+│   ├── PresentationViewer.tsx  # 16:9 presentation stage & 10 pitch cards
+│   ├── ProjectCreationModal.tsx# Idea intake modal & sample presets
+│   └── PipelineProgress.tsx    # Step indicator (Board → Analyze → Attack → Pitch)
+├── services/
+│   ├── ai/
+│   │   ├── qwenClient.ts       # Qwen API client (OpenAI-compatible)
+│   │   ├── pitchAnalyzer.ts    # Zod-validated pitch analysis engine
+│   │   ├── pitchCritic.ts      # Adversarial VC critique generator
+│   │   ├── pitchGenerator.ts   # 10-slide deck & executive summary generator
+│   │   └── judgeAgent.ts       # Skeptical judge Q&A generator
+│   ├── miro/
+│   │   ├── miroClient.ts       # Miro REST API v2 client
+│   │   ├── pitchWriter.ts      # Native Miro frame, sticky note & shape builder
+│   │   ├── boardParser.ts      # Canvas item normalizer
+│   │   └── tokenStore.ts       # Secure local token persistence
+│   └── export/
+│       └── pptxExport.ts       # Native 16:9 PPTX & Markdown exporter
 ```
 
 ---
 
-## 🎯 3-Minute Signature Demo Flow
+## 🛡 Security & Privacy
 
-Experience the entire flow in under 3 minutes:
-
-1. Click **"See Demo (AI Bug Triage Agent)"** on the landing page (or top right header).
-2. **Miro Board**: View the 20 extracted sticky notes across 4 frames capturing developer pain points, unverified time-saving claims, and architectural sketches.
-3. **Qwen Analysis**: Inspect the **Pitch Readiness Score (68/100)**. Notice how the claims audit flags unverified statistics like *"teams will save 70% of triage time"* as an `[Unverified claim]` needing benchmark evidence.
-4. **🔥 Attack My Pitch**: Click the **Attack Mode** tab. See the brutal VC critique exposing competitive risks against GitHub Copilot and hallucination dangers, with an initial **Survival Score of 67/100**. Click **"Arm Defense"** to enter rebuttals and watch the score climb.
-5. **Improve Pitch**: Click **"Improve Pitch"** to review the 3 primary flaws. Click **"Accept All Recommendations"** to see readiness reach **89/100**.
-6. **Presentation**: Click **"Presentation"** to view the 10-slide deck, read visual suggestions, and export to **PowerPoint (.pptx)**.
-7. **Speaker Coach & Audio**: Check the timed script, tone cues, and hit **"Play"** in Audio Pitch to listen to synchronized voice narration.
-8. **AI Judge**: Test the 10 skeptical judge questions across Competition, Security, Ethics, and Business Model.
-9. **Final Package**: Review your completed asset checklist and click **"Download Complete Bundle"**.
+- **Protected Credentials**: Miro access tokens, client secrets, and Qwen API keys are never exposed to client-side bundles.
+- **Git Protection**: `.env`, `.env.local`, and `data/miro_token.json` are strictly ignored by `.gitignore`.
+- **Sensitive Token Masking**: API diagnostic logs sanitize sensitive secrets and tokens before logging.
 
 ---
 
-## 🛡 Epistemic Integrity Rules
+## 📜 License
 
-PitchForge enforces strict rules to prevent hallucinated pitching:
-1. **Never Invent Evidence**: Statistics without empirical sources are classified as `Unverified claim` or `Assumption`, never factual metrics.
-2. **Explicit Verification Badges**: Every insight carries an explicit badge:
-   - `[User-provided]`
-   - `[AI inference]`
-   - `[Verified evidence]`
-   - `[Evidence needed]`
-   - `[Assumption]`
-   - `[Unverified claim]`
-3. **Judge Grounding**: In AI Judge mode, if the project context does not supply verifiable proof to answer a tough question, Qwen explicitly states: *"Your current project context does not provide enough evidence to answer this confidently."*
-#   m i r o _ q w e n  
- 
+Distributed under the **MIT License**. Built for builders, hackathon competitors, and startup teams worldwide.
