@@ -37,7 +37,9 @@ export function PresentationViewer({
 }: PresentationViewerProps) {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
+  const [pptExportState, setPptExportState] = useState<'idle' | 'generating' | 'success' | 'error'>('idle');
+  const [pptDownloadUrl, setPptDownloadUrl] = useState<string | null>(null);
+  const [pptFileName, setPptFileName] = useState<string>('');
   const [isRegeneratingImage, setIsRegeneratingImage] = useState(false);
   const [imageErrorMap, setImageErrorMap] = useState<Record<number, boolean>>({});
   const [editedTitle, setEditedTitle] = useState('');
@@ -115,17 +117,43 @@ export function PresentationViewer({
   };
 
   const handleExportPPTX = async () => {
-    setIsExporting(true);
+    setPptExportState('generating');
     try {
-      const blob = await exportPitchDeckToPPTX(deck);
-      if (blob) {
-        const cleanName = deck.title.replace(/[^a-zA-Z0-9_-]/g, '_');
-        downloadBlob(blob, `${cleanName}_PitchForge.pptx`);
+      const res = await fetch('/api/export/pptx', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pitch: deck }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success && data.downloadUrl) {
+        setPptDownloadUrl(data.downloadUrl);
+        setPptFileName(data.fileName);
+        setPptExportState('success');
+
+        // Automatically trigger browser download of real file
+        const a = document.createElement('a');
+        a.href = data.downloadUrl;
+        a.download = data.fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        // Fallback to client-side PptxGenJS if server had an issue
+        const blob = await exportPitchDeckToPPTX(deck);
+        if (blob) {
+          const cleanName = `${deck.title.replace(/[^a-zA-Z0-9_-]/g, '_')}_PitchForge.pptx`;
+          downloadBlob(blob, cleanName);
+          setPptExportState('success');
+          setPptFileName(cleanName);
+        } else {
+          setPptExportState('error');
+        }
       }
     } catch (e) {
       console.error('PPTX export error:', e);
-    } finally {
-      setIsExporting(false);
+      setPptExportState('error');
     }
   };
 
@@ -168,14 +196,60 @@ export function PresentationViewer({
             <span>SPEAKER SCRIPT</span>
           </button>
 
-          <button
-            onClick={handleExportPPTX}
-            disabled={isExporting}
-            className="btn-flame px-4 py-2 rounded-xs text-xs font-mono font-extrabold flex items-center space-x-1.5 disabled:opacity-50"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>{isExporting ? 'EXPORTING...' : 'EXPORT PPTX'}</span>
-          </button>
+          {pptExportState === 'idle' && (
+            <button
+              onClick={handleExportPPTX}
+              className="btn-flame px-4 py-2 rounded-xs text-xs font-mono font-extrabold flex items-center space-x-1.5 transition-all hover:scale-[1.02]"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>EXPORT PPT</span>
+            </button>
+          )}
+
+          {pptExportState === 'generating' && (
+            <button
+              disabled
+              className="px-4 py-2 rounded-xs text-xs font-mono font-bold text-white bg-zinc-800 border border-[#FF4D00]/40 flex items-center space-x-2 animate-pulse cursor-wait"
+            >
+              <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#FF4D00]" />
+              <span>Generating Pitch Deck...</span>
+            </button>
+          )}
+
+          {pptExportState === 'success' && (
+            <div className="flex items-center space-x-2">
+              <span className="text-xs font-mono text-emerald-400 font-bold flex items-center space-x-1">
+                <Check className="w-3.5 h-3.5" />
+                <span>✓ Pitch Deck Generated</span>
+              </span>
+              <a
+                href={pptDownloadUrl || '#'}
+                download={pptFileName || `${deck.title}_PitchForge.pptx`}
+                onClick={() => {
+                  if (!pptDownloadUrl) handleExportPPTX();
+                }}
+                className="btn-flame px-3.5 py-1.5 rounded-xs text-xs font-mono font-extrabold flex items-center space-x-1.5 transition-all shadow-sm"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Download PPT</span>
+              </a>
+            </div>
+          )}
+
+          {pptExportState === 'error' && (
+            <div className="flex items-center space-x-2">
+              <span className="text-xs font-mono text-red-400 font-bold flex items-center space-x-1">
+                <span>⚠ Failed to generate pitch deck</span>
+              </span>
+              <button
+                onClick={handleExportPPTX}
+                className="px-3 py-1.5 rounded-xs text-xs font-mono font-bold text-white bg-red-950/80 hover:bg-red-900 border border-red-500/40 flex items-center space-x-1 transition-all"
+              >
+                <RotateCcw className="w-3 h-3 text-red-400" />
+                <span>Try Again</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

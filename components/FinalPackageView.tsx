@@ -12,10 +12,16 @@ import {
   ShieldAlert, 
   Flame, 
   Video, 
-  Sparkles,
-  ExternalLink,
-  ChevronRight,
-  Layers
+  Sparkles, 
+  ExternalLink, 
+  ChevronRight, 
+  Layers,
+  Play,
+  Copy,
+  Check,
+  RotateCcw,
+  RefreshCw,
+  X
 } from 'lucide-react';
 import { 
   PitchDeck, 
@@ -51,9 +57,123 @@ export function FinalPackageView({
   onPrepareForPitch,
   onSendToMiro,
 }: FinalPackageViewProps) {
+  // PPTX export state
+  const [pptState, setPptState] = useState<'idle' | 'generating' | 'success' | 'error'>('idle');
+  const [pptUrl, setPptUrl] = useState<string | null>(null);
+  const [pptFileName, setPptFileName] = useState<string>('');
+
+  // Video export state
+  const [videoState, setVideoState] = useState<'idle' | 'generating' | 'success' | 'error'>('idle');
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [videoFileName, setVideoFileName] = useState<string>('');
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+
+  // Script copy state
+  const [isCopied, setIsCopied] = useState(false);
   const [isDownloadingBundle, setIsDownloadingBundle] = useState(false);
 
-  const readinessScore = Math.max(91, (analysis?.pitchReadinessScore || 70) + 18);
+  const handleGenerateOrDownloadPptx = async () => {
+    if (!deck) return;
+    setPptState('generating');
+    try {
+      const res = await fetch('/api/export/pptx', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pitch: deck }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success && data.downloadUrl) {
+        setPptUrl(data.downloadUrl);
+        setPptFileName(data.fileName);
+        setPptState('success');
+
+        const a = document.createElement('a');
+        a.href = data.downloadUrl;
+        a.download = data.fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        // Fallback
+        const blob = await exportPitchDeckToPPTX(deck);
+        if (blob) {
+          const fn = `${deck.title.replace(/\s+/g, '_')}_Deck.pptx`;
+          downloadBlob(blob, fn);
+          setPptState('success');
+          setPptFileName(fn);
+        } else {
+          setPptState('error');
+        }
+      }
+    } catch (e) {
+      console.error('PPTX export error:', e);
+      setPptState('error');
+    }
+  };
+
+  const handleGenerateOrDownloadVideo = async () => {
+    if (!deck) return;
+    setVideoState('generating');
+    try {
+      const res = await fetch('/api/export/video', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pitch: deck }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success && data.videoUrl) {
+        setVideoUrl(data.videoUrl);
+        setVideoFileName(data.fileName);
+        setVideoState('success');
+
+        // Trigger download
+        const a = document.createElement('a');
+        a.href = `${data.videoUrl}?download=1`;
+        a.download = data.fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        setVideoState('error');
+      }
+    } catch (e) {
+      console.error('Video export error:', e);
+      setVideoState('error');
+    }
+  };
+
+  const handleCopyScript = () => {
+    if (!deck) return;
+    const fullScript = deck.slides.map(s => 
+      `--- SLIDE ${s.slideNumber}: ${s.title.toUpperCase()} ---\n${s.speakerScript}\n`
+    ).join('\n');
+
+    navigator.clipboard.writeText(fullScript);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 3000);
+  };
+
+  const handleDownloadCompleteBundle = async () => {
+    setIsDownloadingBundle(true);
+    try {
+      if (deck) {
+        const pptxBlob = await exportPitchDeckToPPTX(deck);
+        if (pptxBlob) {
+          downloadBlob(pptxBlob, `${deck.title.replace(/\s+/g, '_')}_Deck.pptx`);
+        }
+      }
+
+      if (summary) {
+        const mdText = exportSummaryAsMarkdown(summary);
+        const mdBlob = new Blob([mdText], { type: 'text/markdown;charset=utf-8' });
+        downloadBlob(mdBlob, `${summary.projectName.replace(/\s+/g, '_')}_Executive_Summary.md`);
+      }
+    } catch (e) {
+      console.error('Error downloading bundle:', e);
+    } finally {
+      setIsDownloadingBundle(false);
+    }
+  };
 
   const assets = [
     {
@@ -123,70 +243,283 @@ export function FinalPackageView({
     },
   ];
 
-  const handleDownloadCompleteBundle = async () => {
-    setIsDownloadingBundle(true);
-    try {
-      if (deck) {
-        const pptxBlob = await exportPitchDeckToPPTX(deck);
-        if (pptxBlob) {
-          downloadBlob(pptxBlob, `${deck.title.replace(/\s+/g, '_')}_Deck.pptx`);
-        }
-      }
-
-      if (summary) {
-        const mdText = exportSummaryAsMarkdown(summary);
-        const mdBlob = new Blob([mdText], { type: 'text/markdown;charset=utf-8' });
-        downloadBlob(mdBlob, `${summary.projectName.replace(/\s+/g, '_')}_Executive_Summary.md`);
-      }
-    } catch (e) {
-      console.error('Error downloading bundle:', e);
-    } finally {
-      setIsDownloadingBundle(false);
-    }
-  };
-
   return (
     <div className="space-y-8 max-w-7xl mx-auto px-2 sm:px-0">
-      {/* Hero Completion Studio Banner */}
-      <div className="studio-panel p-6 sm:p-10 rounded-xs border border-white/[0.08] shadow-card bg-grid-editorial relative overflow-hidden flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+      {/* SECTION 19: REDESIGNED EXPORT YOUR PITCH SECTION */}
+      <div className="studio-panel p-6 sm:p-10 rounded-xs border border-white/[0.1] bg-[#0A0A0A] shadow-card relative overflow-hidden">
+        {/* Top Flame Accent Line */}
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#FF6A00] via-[#FF4D00] to-transparent" />
 
-        <div className="space-y-2">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-xs bg-[#FF4D00]/15 border border-[#FF4D00]/30 text-[#FF6A00] text-[10px] font-mono font-bold uppercase tracking-widest">
-            <CheckCircle2 className="w-3.5 h-3.5 text-[#FF4D00]" />
-            <span>PITCH PACKAGE SYNTHESIS COMPLETE</span>
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-white/[0.08]">
+          <div>
+            <span className="text-[11px] font-mono tracking-widest text-[#FF4D00] uppercase font-bold">
+              FINAL EXPORT STUDIO
+            </span>
+            <h1 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight font-sans mt-0.5">
+              EXPORT YOUR PITCH
+            </h1>
+            <p className="text-sm font-mono text-zinc-400 mt-1">
+              Your pitch is ready.
+            </p>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tight font-sans">
-            YOUR PITCH PACKAGE IS ARMED
-          </h1>
-
-          <p className="text-xs sm:text-sm text-zinc-400 max-w-xl font-normal leading-relaxed">
-            From raw Miro board ideation to 10-slide deck, speaker teleprompter, and battle-tested hostile judge defense.
-          </p>
+          <div className="flex items-center space-x-3">
+            {onSendToMiro && (
+              <button
+                onClick={onSendToMiro}
+                className="px-5 py-2.5 rounded-xs text-xs font-mono font-bold text-black bg-[#FFD02F] hover:bg-[#F2C425] shadow-sm flex items-center space-x-2 transition-all hover:scale-[1.02]"
+              >
+                <span>✦ SEND PITCH TO MIRO</span>
+              </button>
+            )}
+            <button
+              onClick={handleDownloadCompleteBundle}
+              disabled={isDownloadingBundle}
+              className="px-4 py-2.5 rounded-xs text-xs font-mono font-bold text-white bg-[#141414] hover:bg-[#1C1C1C] border border-white/[0.1] flex items-center space-x-2 transition-all"
+            >
+              <Download className="w-3.5 h-3.5 text-zinc-400" />
+              <span>{isDownloadingBundle ? 'PACKAGING...' : 'DOWNLOAD FULL BUNDLE'}</span>
+            </button>
+          </div>
         </div>
 
-        <div className="flex items-center space-x-3 shrink-0 flex-wrap gap-2">
-          {onSendToMiro && (
-            <button
-              onClick={onSendToMiro}
-              className="btn-flame px-5 py-3 rounded-xs text-xs font-mono font-extrabold flex items-center space-x-2"
-            >
-              <span>✦ WRITE PITCH TO MIRO</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </button>
-          )}
+        {/* 3 Major Deliverables: Deck, Video, Script */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+          {/* 1. Pitch Deck Card */}
+          <div className="studio-card p-6 rounded-xs border border-white/[0.08] bg-[#111111] flex flex-col justify-between relative group hover:border-[#FF4D00]/50 transition-all">
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2 text-emerald-400 text-xs font-mono font-bold">
+                <Check className="w-4 h-4 text-emerald-400" />
+                <span>✓ Pitch Deck</span>
+              </div>
+              <h3 className="text-lg font-bold text-white font-sans">
+                PowerPoint presentation
+              </h3>
+              <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                10 widescreen 16:9 slides formatted in PitchForge dark editorial aesthetic with speaker notes and visual hierarchy.
+              </p>
+            </div>
 
-          <button
-            onClick={handleDownloadCompleteBundle}
-            disabled={isDownloadingBundle}
-            className="px-4 py-3 rounded-xs text-xs font-mono font-bold text-white bg-[#141414] hover:bg-[#1C1C1C] border border-white/[0.1] flex items-center space-x-2 transition-all disabled:opacity-50"
-          >
-            <Download className="w-3.5 h-3.5 text-zinc-400" />
-            <span>{isDownloadingBundle ? 'PACKAGING...' : 'DOWNLOAD BUNDLE'}</span>
-          </button>
+            <div className="pt-6">
+              {pptState === 'idle' && (
+                <button
+                  onClick={handleGenerateOrDownloadPptx}
+                  className="btn-flame w-full py-2.5 rounded-xs text-xs font-mono font-bold flex items-center justify-center space-x-2"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Download PPTX</span>
+                </button>
+              )}
+
+              {pptState === 'generating' && (
+                <button
+                  disabled
+                  className="w-full py-2.5 rounded-xs text-xs font-mono font-bold text-white bg-zinc-800 border border-[#FF4D00]/40 flex items-center justify-center space-x-2 cursor-wait animate-pulse"
+                >
+                  <RefreshCw className="w-4 h-4 animate-spin text-[#FF4D00]" />
+                  <span>Generating Pitch Deck...</span>
+                </button>
+              )}
+
+              {pptState === 'success' && (
+                <div className="space-y-2">
+                  <div className="text-[11px] font-mono text-emerald-400 font-bold flex items-center space-x-1 justify-center">
+                    <Check className="w-3.5 h-3.5" />
+                    <span>✓ Pitch Deck Generated</span>
+                  </div>
+                  <a
+                    href={pptUrl || '#'}
+                    download={pptFileName || `${deck?.title || 'PitchForge'}_Pitch.pptx`}
+                    onClick={() => {
+                      if (!pptUrl) handleGenerateOrDownloadPptx();
+                    }}
+                    className="btn-flame w-full py-2 rounded-xs text-xs font-mono font-bold flex items-center justify-center space-x-2"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Download PPTX</span>
+                  </a>
+                </div>
+              )}
+
+              {pptState === 'error' && (
+                <div className="space-y-2">
+                  <div className="text-[11px] font-mono text-red-400 font-bold flex items-center space-x-1 justify-center">
+                    <span>⚠ Failed to generate pitch deck</span>
+                  </div>
+                  <button
+                    onClick={handleGenerateOrDownloadPptx}
+                    className="w-full py-2 rounded-xs text-xs font-mono font-bold text-white bg-red-950/80 hover:bg-red-900 border border-red-500/40 flex items-center justify-center space-x-1.5 transition-all"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5 text-red-400" />
+                    <span>Try Again</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* 2. Pitch Video Card */}
+          <div className="studio-card p-6 rounded-xs border border-white/[0.08] bg-[#111111] flex flex-col justify-between relative group hover:border-[#FF4D00]/50 transition-all">
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2 text-emerald-400 text-xs font-mono font-bold">
+                <Check className="w-4 h-4 text-emerald-400" />
+                <span>✓ Pitch Video</span>
+              </div>
+              <h3 className="text-lg font-bold text-white font-sans">
+                Narrated presentation
+              </h3>
+              <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                Full 1080p MP4 with synchronized slide scenes, voiceover narration, subtitle bars, and PitchForge branding.
+              </p>
+            </div>
+
+            <div className="pt-6">
+              {videoState === 'idle' && (
+                <button
+                  onClick={handleGenerateOrDownloadVideo}
+                  className="btn-flame w-full py-2.5 rounded-xs text-xs font-mono font-bold flex items-center justify-center space-x-2"
+                >
+                  <Video className="w-4 h-4" />
+                  <span>Generate & Download MP4</span>
+                </button>
+              )}
+
+              {videoState === 'generating' && (
+                <button
+                  disabled
+                  className="w-full py-2.5 rounded-xs text-xs font-mono font-bold text-white bg-zinc-800 border border-[#FF4D00]/40 flex items-center justify-center space-x-2 cursor-wait animate-pulse"
+                >
+                  <RefreshCw className="w-4 h-4 animate-spin text-[#FF4D00]" />
+                  <span>Rendering 10-Slide Video...</span>
+                </button>
+              )}
+
+              {videoState === 'success' && (
+                <div className="space-y-2">
+                  <div className="text-[11px] font-mono text-emerald-400 font-bold flex items-center space-x-1 justify-center">
+                    <Check className="w-3.5 h-3.5" />
+                    <span>✓ Pitch Video Generated</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => setIsVideoModalOpen(true)}
+                      className="flex-1 py-2 rounded-xs text-xs font-mono font-bold text-white bg-[#1A1A1A] hover:bg-[#252525] border border-white/[0.1] flex items-center justify-center space-x-1.5 transition-all"
+                    >
+                      <Play className="w-3.5 h-3.5 text-[#FF6A00]" />
+                      <span>▶ Preview Video</span>
+                    </button>
+                    <a
+                      href={`${videoUrl}?download=1`}
+                      download={videoFileName || `${deck?.title || 'PitchForge'}_Pitch.mp4`}
+                      className="btn-flame flex-1 py-2 rounded-xs text-xs font-mono font-bold flex items-center justify-center space-x-1.5"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download MP4</span>
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {videoState === 'error' && (
+                <div className="space-y-2">
+                  <div className="text-[11px] font-mono text-red-400 font-bold flex items-center space-x-1 justify-center">
+                    <span>⚠ Video generation failed</span>
+                  </div>
+                  <button
+                    onClick={handleGenerateOrDownloadVideo}
+                    className="w-full py-2 rounded-xs text-xs font-mono font-bold text-white bg-red-950/80 hover:bg-red-900 border border-red-500/40 flex items-center justify-center space-x-1.5 transition-all"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5 text-red-400" />
+                    <span>Try Again</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* 3. Speaker Script Card */}
+          <div className="studio-card p-6 rounded-xs border border-white/[0.08] bg-[#111111] flex flex-col justify-between relative group hover:border-[#FF4D00]/50 transition-all">
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2 text-emerald-400 text-xs font-mono font-bold">
+                <Check className="w-4 h-4 text-emerald-400" />
+                <span>✓ Speaker Script</span>
+              </div>
+              <h3 className="text-lg font-bold text-white font-sans">
+                Presentation narration
+              </h3>
+              <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                Complete slide-by-slide spoken narrative with pause codes, tone directions, and rehearsal timecodes.
+              </p>
+            </div>
+
+            <div className="pt-6">
+              <button
+                onClick={handleCopyScript}
+                className="w-full py-2.5 rounded-xs text-xs font-mono font-bold text-white bg-[#1A1A1A] hover:bg-[#222222] border border-white/[0.1] hover:border-[#FF4D00]/50 flex items-center justify-center space-x-2 transition-all"
+              >
+                {isCopied ? (
+                  <>
+                    <Check className="w-4 h-4 text-emerald-400" />
+                    <span className="text-emerald-400">✓ Script Copied</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-4 h-4 text-[#FF6A00]" />
+                    <span>Copy Script</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* HTML5 VIDEO PREVIEW MODAL */}
+      {isVideoModalOpen && videoUrl && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4">
+          <div className="bg-[#0E0E0E] border border-white/[0.15] rounded-xs max-w-4xl w-full overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="p-4 border-b border-white/[0.08] flex items-center justify-between bg-[#141414]">
+              <div className="flex items-center space-x-2">
+                <Video className="w-4 h-4 text-[#FF4D00]" />
+                <span className="text-xs font-mono font-bold text-white uppercase tracking-wider">
+                  PITCH VIDEO PREVIEW  •  1080P MP4
+                </span>
+              </div>
+              <button
+                onClick={() => setIsVideoModalOpen(false)}
+                className="p-1 rounded-xs text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-4 bg-black flex items-center justify-center">
+              <video
+                controls
+                autoPlay
+                className="w-full max-h-[540px] rounded-xs border border-white/[0.08] shadow-lg"
+                src={videoUrl}
+              >
+                Your browser does not support the video tag.
+              </video>
+            </div>
+
+            <div className="p-4 bg-[#141414] border-t border-white/[0.08] flex items-center justify-between">
+              <span className="text-xs font-mono text-zinc-400">
+                {videoFileName || 'pitchforge-pitch.mp4'}
+              </span>
+              <a
+                href={`${videoUrl}?download=1`}
+                download={videoFileName || 'pitchforge-pitch.mp4'}
+                className="btn-flame px-4 py-2 rounded-xs text-xs font-mono font-bold flex items-center space-x-1.5"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Download MP4</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 8 Deliverable Assets Grid */}
       <div className="space-y-4">

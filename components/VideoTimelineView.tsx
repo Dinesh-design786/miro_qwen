@@ -106,10 +106,40 @@ export function VideoTimelineView({ deck, onProceedToJudge }: VideoTimelineViewP
 
   const handleStartRender = async () => {
     setIsRendering(true);
-    setRenderProgress(0);
-    setRenderStatus('Initializing video pipeline...');
+    setRenderProgress(10);
+    setRenderStatus('Compiling 10-slide synchronized video with FFmpeg...');
 
     try {
+      // 1. Try real server-side FFmpeg pipeline first
+      const res = await fetch('/api/export/video', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pitch: deck }),
+      });
+
+      setRenderProgress(70);
+      setRenderStatus('Processing video stream & narration audio...');
+
+      const data = await res.json();
+
+      if (res.ok && data.success && data.videoUrl) {
+        setRenderProgress(100);
+        setRenderStatus('Video Render Complete!');
+        setRenderedVideoUrl(data.videoUrl);
+        setRenderedFilename(data.fileName);
+
+        // Auto trigger download
+        const a = document.createElement('a');
+        a.href = `${data.videoUrl}?download=1`;
+        a.download = data.fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        return;
+      }
+
+      // 2. Client-side fallback if server pipeline encountered an issue
+      setRenderStatus('Running browser client-side canvas renderer fallback...');
       const result = await videoRenderer.renderDeckToVideo(
         deck,
         {
@@ -125,7 +155,6 @@ export function VideoTimelineView({ deck, onProceedToJudge }: VideoTimelineViewP
 
       setRenderedVideoUrl(result.url);
       setRenderedFilename(result.filename);
-      // Auto trigger download
       videoRenderer.downloadBlob(result.blob, result.filename);
     } catch (err: any) {
       console.error('Video generation failed:', err);
