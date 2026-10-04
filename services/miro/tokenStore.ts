@@ -33,18 +33,16 @@ export function saveMiroToken(tokenData: Partial<MiroTokenData>): void {
     }
 
     fs.writeFileSync(TOKEN_FILE_PATH, JSON.stringify(fullData, null, 2), 'utf-8');
+    if (fullData.access_token) {
+      process.env.MIRO_ACCESS_TOKEN = fullData.access_token;
+    }
   } catch (error) {
     console.error('Failed to save Miro token to file:', error);
   }
 }
 
 export function getStoredMiroToken(): string | null {
-  // 1. First check environment variable
-  if (process.env.MIRO_ACCESS_TOKEN && process.env.MIRO_ACCESS_TOKEN.trim().length > 0) {
-    return process.env.MIRO_ACCESS_TOKEN.trim();
-  }
-
-  // 2. Next check persisted token file
+  // 1. First check persisted token file (live session or saved token)
   try {
     if (fs.existsSync(TOKEN_FILE_PATH)) {
       const raw = fs.readFileSync(TOKEN_FILE_PATH, 'utf-8');
@@ -55,6 +53,11 @@ export function getStoredMiroToken(): string | null {
     }
   } catch (error) {
     console.warn('Failed to read stored Miro token:', error);
+  }
+
+  // 2. Fallback to environment variable
+  if (process.env.MIRO_ACCESS_TOKEN && process.env.MIRO_ACCESS_TOKEN.trim().length > 0) {
+    return process.env.MIRO_ACCESS_TOKEN.trim();
   }
 
   return null;
