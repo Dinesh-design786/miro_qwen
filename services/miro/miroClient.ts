@@ -380,6 +380,39 @@ export class MiroClient {
     });
   }
 
+  public async createImage(boardId: string, options: {
+    url: string;
+    title?: string;
+    x: number;
+    y: number;
+    width?: number;
+    parentId?: string;
+  }): Promise<any> {
+    const payload: any = {
+      data: {
+        url: options.url,
+        title: options.title || 'Visual Image',
+      },
+      position: {
+        x: options.x,
+        y: options.y,
+      },
+    };
+
+    if (options.width) {
+      payload.geometry = { width: options.width };
+    }
+
+    if (options.parentId) {
+      payload.parent = { id: options.parentId };
+    }
+
+    return this.request(`/boards/${encodeURIComponent(boardId)}/images`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  }
+
   public async deleteItem(boardId: string, itemId: string): Promise<any> {
     return this.request(`/boards/${encodeURIComponent(boardId)}/items/${encodeURIComponent(itemId)}`, {
       method: 'DELETE',

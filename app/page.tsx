@@ -44,6 +44,7 @@ import {
 } from '@/data/demoProject';
 
 import { exportPitchDeckToPPTX, exportSummaryAsMarkdown, downloadBlob } from '@/services/export/pptxExport';
+import { populateDeckWithImages } from '@/services/media/imageGenerator';
 
 export default function Home() {
   const [project, setProject] = useState<Project | null>(null);
@@ -95,7 +96,7 @@ export default function Home() {
     setAnalysis(INITIAL_DEMO_ANALYSIS);
     setImprovements(DEMO_IMPROVEMENTS);
     setAttackReport(DEMO_ATTACK_REPORT);
-    setDeck(DEMO_PITCH_DECK);
+    setDeck(populateDeckWithImages(DEMO_PITCH_DECK, DEMO_PROJECT.name));
     setJudgeQuestions(DEMO_JUDGE_QUESTIONS);
     setSummary(DEMO_EXECUTIVE_SUMMARY);
     setActiveTab('analysis');
@@ -179,7 +180,8 @@ export default function Home() {
       const pitchData = await pitchRes.json();
       const judgeData = await judgeRes.json();
 
-      setDeck(pitchData.deck || DEMO_PITCH_DECK);
+      const finalDeck = pitchData.deck || DEMO_PITCH_DECK;
+      setDeck(populateDeckWithImages(finalDeck, newProj.name));
       setSummary(pitchData.summary || DEMO_EXECUTIVE_SUMMARY);
       setJudgeQuestions(judgeData.judgeQuestions || DEMO_JUDGE_QUESTIONS);
 

@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { Project, PitchAnalysis, PitchDeck, Slide, ExecutiveSummary } from '@/types';
 import { qwenClient } from './qwenClient';
 import { DEMO_PITCH_DECK, DEMO_EXECUTIVE_SUMMARY } from '@/data/demoProject';
+import { populateDeckWithImages } from '@/services/media/imageGenerator';
 
 const SlideDeliverySchema = z.object({
   tone: z.string(),
@@ -20,6 +21,8 @@ export const SlideSchema = z.object({
   speakerScript: z.string(),
   durationSeconds: z.number(),
   deliveryNotes: SlideDeliverySchema,
+  imageUrl: z.string().optional(),
+  visualPrompt: z.string().optional(),
 });
 
 export const PitchDeckSchema = z.object({
@@ -51,9 +54,9 @@ export async function generatePitchDeck(
 ): Promise<PitchDeck> {
   if (!qwenClient.isConfigured()) {
     if (project.id === 'proj-bug-triage-demo' || project.isDemo) {
-      return DEMO_PITCH_DECK;
+      return populateDeckWithImages(DEMO_PITCH_DECK, project.name);
     }
-    return generateSmartMockDeck(project, analysis, slideCount);
+    return populateDeckWithImages(generateSmartMockDeck(project, analysis, slideCount), project.name);
   }
 
   const systemPrompt = `You are Qwen, a world-class pitch deck designer and storytelling coach at PitchForge.
@@ -100,10 +103,10 @@ Total desired slides: ${slideCount}. Return JSON.`;
     ], { temperature: 0.6 });
 
     const validated = PitchDeckSchema.parse(rawResult);
-    return validated;
+    return populateDeckWithImages(validated, project.name);
   } catch (error: any) {
     console.warn('Qwen API deck error or schema validation failure, falling back to smart deck:', error.message);
-    return generateSmartMockDeck(project, analysis, slideCount);
+    return populateDeckWithImages(generateSmartMockDeck(project, analysis, slideCount), project.name);
   }
 }
 

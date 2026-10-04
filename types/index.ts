@@ -137,6 +137,8 @@ export type Slide = {
   speakerScript: string;
   durationSeconds: number;
   deliveryNotes?: SlideDelivery;
+  imageUrl?: string;
+  visualPrompt?: string;
 };
 
 export type PitchDeck = {
