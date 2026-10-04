@@ -6,15 +6,21 @@ import {
   Sparkles, 
   Play, 
   Layers, 
-  AlertCircle
+  AlertCircle,
+  Lightbulb,
+  Check,
+  ChevronRight,
+  Zap
 } from 'lucide-react';
 import { Project } from '@/types';
+import { ALL_SAMPLE_IDEAS, SampleIdea } from '@/data/sampleProjects';
 
 interface ProjectCreationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (projectData: Partial<Project>) => void;
   onLoadDemo: () => void;
+  onLoadSampleIdea?: (sample: SampleIdea) => void;
   isLoading: boolean;
   loadingStepText?: string;
 }
@@ -24,6 +30,7 @@ export function ProjectCreationModal({
   onClose,
   onSubmit,
   onLoadDemo,
+  onLoadSampleIdea,
   isLoading,
   loadingStepText,
 }: ProjectCreationModalProps) {
@@ -33,6 +40,7 @@ export function ProjectCreationModal({
   const [solutionDescription, setSolutionDescription] = useState('');
   const [miroBoardUrl, setMiroBoardUrl] = useState('');
   const [additionalContext, setAdditionalContext] = useState('');
+  const [selectedSampleId, setSelectedSampleId] = useState<string | null>(null);
   const [error, setError] = useState('');
 
   if (!isOpen) return null;
@@ -63,14 +71,24 @@ export function ProjectCreationModal({
     });
   };
 
-  const handleFillSample = () => {
-    setName('AI Resume Intelligence');
-    setProblemStatement('Students and early-career developers struggle to understand whether their GitHub projects actually demonstrate the skills required for their target tech jobs.');
-    setTargetAudience('College CS seniors and self-taught developers applying for junior software engineering roles.');
-    setSolutionDescription('An automated resume auditor that analyzes actual GitHub code repositories against live job descriptions, generating skill validation badges and project gap recommendations.');
-    setMiroBoardUrl('https://miro.com/app/board/uXjVEervL50=/');
-    setAdditionalContext('Surveyed 45 CS students at hackathon; 82% stated they get zero feedback on why their portfolio was rejected.');
+  const handleSelectSample = (sample: SampleIdea) => {
+    setSelectedSampleId(sample.id);
+    setName(sample.project.name || '');
+    setProblemStatement(sample.project.problemStatement || '');
+    setTargetAudience(sample.project.targetAudience || '');
+    setSolutionDescription(sample.project.solutionDescription || '');
+    setMiroBoardUrl(sample.project.miroBoardUrl || '');
+    setAdditionalContext(sample.project.additionalContext || '');
     setError('');
+  };
+
+  const handleInstantLaunchSample = (sample: SampleIdea) => {
+    if (onLoadSampleIdea) {
+      onLoadSampleIdea(sample);
+      onClose();
+    } else {
+      handleSelectSample(sample);
+    }
   };
 
   return (
@@ -118,7 +136,7 @@ export function ProjectCreationModal({
           </div>
         ) : (
           /* Form Body */
-          <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
+          <form onSubmit={handleSubmit} className="p-6 space-y-5 overflow-y-auto">
             {error && (
               <div className="p-3 rounded-xs bg-red-950/20 border border-red-500/30 text-red-300 text-xs flex items-center space-x-2">
                 <AlertCircle className="w-4 h-4 shrink-0 text-[#FF2D00]" />
@@ -126,34 +144,64 @@ export function ProjectCreationModal({
               </div>
             )}
 
-            {/* Quick Fill Toolbar */}
-            <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
-              <span className="text-xs font-mono text-zinc-500">Want to test quickly?</span>
-              <div className="flex space-x-2">
-                <button
-                  type="button"
-                  onClick={handleFillSample}
-                  className="text-[11px] font-mono text-zinc-300 hover:text-white bg-[#141414] hover:bg-[#1A1A1A] px-2.5 py-1 rounded-xs border border-white/[0.08] transition-colors"
-                >
-                  Insert Sample Idea
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    onLoadDemo();
-                  }}
-                  className="text-[11px] font-mono font-bold text-[#FF6A00] hover:text-[#FF4D00] bg-[#FF4D00]/10 hover:bg-[#FF4D00]/20 px-2.5 py-1 rounded-xs border border-[#FF4D00]/30 transition-colors flex items-center space-x-1"
-                >
-                  <Play className="w-3 h-3 fill-[#FF6A00]" />
-                  <span>Load Full Demo</span>
-                </button>
+            {/* Quick Demo Sample Ideas Selector */}
+            <div className="space-y-2 p-3.5 rounded-xs bg-[#111111] border border-white/[0.06]">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#FF6A00] flex items-center space-x-1.5">
+                  <Lightbulb className="w-3.5 h-3.5" />
+                  <span>DEMO SAMPLE IDEAS (CLICK TO FILL)</span>
+                </span>
+                <span className="text-[10px] font-mono text-zinc-500">{ALL_SAMPLE_IDEAS.length} CURATED TEMPLATES</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 pt-1">
+                {ALL_SAMPLE_IDEAS.map((sample) => {
+                  const isSelected = selectedSampleId === sample.id;
+                  return (
+                    <div
+                      key={sample.id}
+                      onClick={() => handleSelectSample(sample)}
+                      className={`p-2.5 rounded-xs border text-left cursor-pointer transition-all ${
+                        isSelected
+                          ? 'bg-[#1A1A1A] border-[#FF4D00] shadow-sm'
+                          : 'bg-[#141414] hover:bg-[#181818] border-white/[0.06] hover:border-white/[0.15]'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[9px] font-mono font-bold text-[#FF6A00] uppercase truncate">
+                          {sample.category}
+                        </span>
+                        {isSelected && <Check className="w-3 h-3 text-[#FF4D00]" />}
+                      </div>
+                      <div className="text-xs font-bold text-white truncate font-sans">
+                        {sample.name}
+                      </div>
+                      <p className="text-[10px] text-zinc-400 truncate mt-0.5">
+                        {sample.tagline}
+                      </p>
+                      
+                      {onLoadSampleIdea && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleInstantLaunchSample(sample);
+                          }}
+                          className="mt-2 w-full py-1 rounded-xs text-[9px] font-mono font-bold text-zinc-300 hover:text-white bg-white/[0.04] hover:bg-[#FF4D00]/20 border border-white/[0.08] hover:border-[#FF4D00]/40 flex items-center justify-center space-x-1 transition-all"
+                        >
+                          <Zap className="w-2.5 h-2.5 text-[#FF6A00]" />
+                          <span>1-Click Full Demo</span>
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Project Name */}
-            <div>
-              <label className="block text-xs font-mono font-bold text-zinc-300 uppercase tracking-wider mb-1">
+            {/* Field 1: Project Name */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-mono font-bold text-zinc-300 uppercase tracking-wider">
                 Project Name <span className="text-[#FF4D00]">*</span>
               </label>
               <input
@@ -161,95 +209,103 @@ export function ProjectCreationModal({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. AI Bug Triage Agent"
-                className="w-full bg-[#121212] border border-white/[0.1] rounded-xs px-3.5 py-2 text-xs font-mono text-white placeholder-zinc-600 focus:outline-none focus:border-[#FF4D00]"
+                className="w-full bg-[#121212] border border-white/[0.1] rounded-xs px-3.5 py-2.5 text-xs text-white placeholder-zinc-600 focus:outline-hidden focus:border-[#FF4D00] font-sans"
               />
             </div>
 
-            {/* Problem Statement */}
-            <div>
-              <label className="block text-xs font-mono font-bold text-zinc-300 uppercase tracking-wider mb-1">
-                Problem Statement <span className="text-[#FF4D00]">*</span>
+            {/* Field 2: Problem Statement */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-mono font-bold text-zinc-300 uppercase tracking-wider">
+                The Problem <span className="text-[#FF4D00]">*</span>
               </label>
               <textarea
-                rows={3}
                 value={problemStatement}
                 onChange={(e) => setProblemStatement(e.target.value)}
-                placeholder="What painful friction or bottleneck do users face today?"
-                className="w-full bg-[#121212] border border-white/[0.1] rounded-xs p-3 text-xs font-mono text-white placeholder-zinc-600 focus:outline-none focus:border-[#FF4D00]"
+                rows={3}
+                placeholder="What broken workflow, painful cost, or chronic friction are you solving?"
+                className="w-full bg-[#121212] border border-white/[0.1] rounded-xs px-3.5 py-2.5 text-xs text-white placeholder-zinc-600 focus:outline-hidden focus:border-[#FF4D00] font-sans leading-relaxed"
               />
             </div>
 
-            {/* Target Audience */}
-            <div>
-              <label className="block text-xs font-mono font-bold text-zinc-300 uppercase tracking-wider mb-1">
-                Target Customer Persona <span className="text-[#FF4D00]">*</span>
+            {/* Field 3: Target Audience */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-mono font-bold text-zinc-300 uppercase tracking-wider">
+                Target User / Audience <span className="text-[#FF4D00]">*</span>
               </label>
               <input
                 type="text"
                 value={targetAudience}
                 onChange={(e) => setTargetAudience(e.target.value)}
-                placeholder="e.g. Senior engineering managers at mid-sized SaaS startups"
-                className="w-full bg-[#121212] border border-white/[0.1] rounded-xs px-3.5 py-2 text-xs font-mono text-white placeholder-zinc-600 focus:outline-none focus:border-[#FF4D00]"
+                placeholder="e.g. Engineering managers and tech leads at 50-200 dev scaleups"
+                className="w-full bg-[#121212] border border-white/[0.1] rounded-xs px-3.5 py-2.5 text-xs text-white placeholder-zinc-600 focus:outline-hidden focus:border-[#FF4D00] font-sans"
               />
             </div>
 
-            {/* Solution Description */}
-            <div>
-              <label className="block text-xs font-mono font-bold text-zinc-300 uppercase tracking-wider mb-1">
-                Solution & Secret Sauce
+            {/* Field 4: Solution Description */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-mono font-bold text-zinc-300 uppercase tracking-wider">
+                Proposed Solution
               </label>
               <textarea
-                rows={2}
                 value={solutionDescription}
                 onChange={(e) => setSolutionDescription(e.target.value)}
-                placeholder="How does your product solve this in a uniquely defensible way?"
-                className="w-full bg-[#121212] border border-white/[0.1] rounded-xs p-3 text-xs font-mono text-white placeholder-zinc-600 focus:outline-none focus:border-[#FF4D00]"
+                rows={2}
+                placeholder="How does your product solve this? What is your core value prop?"
+                className="w-full bg-[#121212] border border-white/[0.1] rounded-xs px-3.5 py-2.5 text-xs text-white placeholder-zinc-600 focus:outline-hidden focus:border-[#FF4D00] font-sans leading-relaxed"
               />
             </div>
 
-            {/* Miro Board URL */}
-            <div>
-              <label className="block text-xs font-mono font-bold text-zinc-300 uppercase tracking-wider mb-1">
-                Miro Board URL or ID (Optional)
+            {/* Field 5: Miro Board URL */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-mono font-bold text-zinc-300 uppercase tracking-wider flex items-center justify-between">
+                <span>Miro Board URL / ID</span>
+                <span className="text-[10px] text-zinc-500 font-normal">Optional</span>
               </label>
-              <input
-                type="text"
-                value={miroBoardUrl}
-                onChange={(e) => setMiroBoardUrl(e.target.value)}
-                placeholder="https://miro.com/app/board/uXjV.../"
-                className="w-full bg-[#121212] border border-white/[0.1] rounded-xs px-3.5 py-2 text-xs font-mono text-white placeholder-zinc-600 focus:outline-none focus:border-[#FF4D00]"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  value={miroBoardUrl}
+                  onChange={(e) => setMiroBoardUrl(e.target.value)}
+                  placeholder="https://miro.com/app/board/uXjVO123abc="
+                  className="w-full bg-[#121212] border border-white/[0.1] rounded-xs px-3.5 py-2.5 text-xs text-white placeholder-zinc-600 focus:outline-hidden focus:border-[#FF4D00] font-mono"
+                />
+                <div className="absolute right-3 top-2.5 text-zinc-500 pointer-events-none">
+                  <Layers className="w-4 h-4" />
+                </div>
+              </div>
             </div>
 
-            {/* Additional Context */}
-            <div>
-              <label className="block text-xs font-mono font-bold text-zinc-300 uppercase tracking-wider mb-1">
-                Evidence, Traction & Metrics (Optional)
+            {/* Field 6: Additional Context & Claims */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-mono font-bold text-zinc-300 uppercase tracking-wider flex items-center justify-between">
+                <span>Validation Proof & Claims</span>
+                <span className="text-[10px] text-zinc-500 font-normal">Optional</span>
               </label>
               <textarea
-                rows={2}
                 value={additionalContext}
                 onChange={(e) => setAdditionalContext(e.target.value)}
-                placeholder="Any customer quotes, survey data, benchmarks, or pilot statistics..."
-                className="w-full bg-[#121212] border border-white/[0.1] rounded-xs p-3 text-xs font-mono text-white placeholder-zinc-600 focus:outline-none focus:border-[#FF4D00]"
+                rows={2}
+                placeholder="Any customer interview data, pilot benchmarks, or claims to audit?"
+                className="w-full bg-[#121212] border border-white/[0.1] rounded-xs px-3.5 py-2.5 text-xs text-white placeholder-zinc-600 focus:outline-hidden focus:border-[#FF4D00] font-sans leading-relaxed"
               />
             </div>
 
-            {/* Submit Toolbar */}
-            <div className="pt-2 flex items-center justify-between">
+            {/* Modal Actions */}
+            <div className="flex items-center justify-between pt-3 border-t border-white/[0.08]">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-xs font-mono text-zinc-500 hover:text-white"
+                className="px-4 py-2 text-xs font-mono text-zinc-400 hover:text-white transition-colors"
               >
-                CANCEL
+                Cancel
               </button>
 
               <button
                 type="submit"
-                className="btn-flame px-5 py-2.5 rounded-xs text-xs font-mono font-extrabold flex items-center space-x-1.5"
+                className="btn-flame px-6 py-2.5 rounded-xs text-xs font-mono font-extrabold flex items-center space-x-2"
               >
-                <span>✦ INITIATE WAR ROOM REASONING</span>
+                <span>✦ INITIATE PITCHFORGE AUDIT</span>
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </form>

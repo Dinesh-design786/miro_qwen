@@ -45,6 +45,7 @@ import {
 
 import { exportPitchDeckToPPTX, exportSummaryAsMarkdown, downloadBlob } from '@/services/export/pptxExport';
 import { populateDeckWithImages } from '@/services/media/imageGenerator';
+import { SampleIdea, ALL_SAMPLE_IDEAS } from '@/data/sampleProjects';
 
 export default function Home() {
   const [project, setProject] = useState<Project | null>(null);
@@ -102,6 +103,21 @@ export default function Home() {
     setActiveTab('analysis');
     setIsModalOpen(false);
     showToast('Loaded Demo Project: AI Bug Triage Agent (Pitch Readiness: 68/100)');
+  };
+
+  // Instant 1-Click Specific Sample Idea Loader
+  const handleLoadSampleIdea = (sample: SampleIdea) => {
+    setProject(sample.project);
+    setBoardContext(DEMO_BOARD_CONTEXT);
+    setAnalysis(sample.analysis);
+    setImprovements(sample.improvements);
+    setAttackReport(sample.attackReport);
+    setDeck(populateDeckWithImages(sample.deck, sample.project.name));
+    setJudgeQuestions(sample.judgeQuestions);
+    setSummary(sample.summary);
+    setActiveTab('analysis');
+    setIsModalOpen(false);
+    showToast(`Loaded Demo: ${sample.name} (Pitch Readiness: ${sample.readinessScore}/100)`);
   };
 
   // Handle Project Creation & Qwen Analysis Workflow
@@ -328,6 +344,7 @@ export default function Home() {
         setActiveTab={setActiveTab}
         onOpenNewProject={() => setIsModalOpen(true)}
         onLoadDemo={handleLoadDemo}
+        onSelectSampleIdea={handleLoadSampleIdea}
         onExportAll={handleGlobalExport}
         onSendToMiro={() => setIsMiroModalOpen(true)}
         isAnalyzing={isLoading}
@@ -351,6 +368,7 @@ export default function Home() {
           <LandingHero
             onStartBuilding={() => setIsModalOpen(true)}
             onSeeDemo={handleLoadDemo}
+            onSelectSampleIdea={handleLoadSampleIdea}
           />
         ) : (
           <div className="space-y-6">
@@ -463,6 +481,7 @@ export default function Home() {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleCreateProject}
         onLoadDemo={handleLoadDemo}
+        onLoadSampleIdea={handleLoadSampleIdea}
         isLoading={isLoading}
         loadingStepText={loadingStepText}
       />

@@ -12,15 +12,19 @@ import {
   ShieldAlert, 
   ExternalLink,
   Layers,
-  ChevronRight
+  ChevronRight,
+  Zap,
+  CheckCircle2
 } from 'lucide-react';
+import { ALL_SAMPLE_IDEAS, SampleIdea } from '@/data/sampleProjects';
 
 interface LandingHeroProps {
   onStartBuilding: () => void;
   onSeeDemo: () => void;
+  onSelectSampleIdea?: (sample: SampleIdea) => void;
 }
 
-export function LandingHero({ onStartBuilding, onSeeDemo }: LandingHeroProps) {
+export function LandingHero({ onStartBuilding, onSeeDemo, onSelectSampleIdea }: LandingHeroProps) {
   const pipeline = [
     { num: '01', title: 'MIRO CANVAS', subtitle: 'Sticky Notes & Visual Context' },
     { num: '02', title: 'BOARD INTELLIGENCE', subtitle: 'AST & Topology Normalization' },
@@ -96,6 +100,7 @@ export function LandingHero({ onStartBuilding, onSeeDemo }: LandingHeroProps) {
           {/* Micro Meta */}
           <div className="pt-2 flex items-center space-x-4 text-[11px] font-mono text-zinc-500">
             <span>• 10-Slide Deck</span>
+            <span>• 1080p Pitch Video</span>
             <span>• Defense Q&A</span>
             <span>• Real Miro Write-Back</span>
           </div>
@@ -198,8 +203,80 @@ export function LandingHero({ onStartBuilding, onSeeDemo }: LandingHeroProps) {
         </div>
       </div>
 
+      {/* SAMPLE DEMO IDEAS SHOWCASE (NEW) */}
+      <div className="mt-20 pt-10 border-t border-white/[0.08]">
+        <div className="flex flex-col sm:flex-row items-start sm:items-baseline justify-between mb-6 gap-2">
+          <div>
+            <span className="text-[10px] font-mono font-bold tracking-widest text-[#FF4D00] uppercase">
+              INSTANT DEMO SHOWCASE
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight mt-0.5 font-sans">
+              EXPLORE CURATED SAMPLE IDEAS
+            </h2>
+            <p className="text-xs text-zinc-400 font-mono mt-1">
+              Select any startup idea to instantly test PitchForge with pre-audited pitch decks and judge defenses.
+            </p>
+          </div>
+          <span className="text-xs font-mono text-[#FF6A00] font-bold">
+            5 DIVERSE VERTICALS
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {ALL_SAMPLE_IDEAS.map((sample) => (
+            <div
+              key={sample.id}
+              className="studio-card p-5 rounded-xs border border-white/[0.08] bg-[#0E0E0E] hover:border-[#FF4D00]/50 flex flex-col justify-between group transition-all"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="text-[10px] font-mono font-bold text-[#FF4D00] uppercase tracking-wider">
+                    {sample.category}
+                  </span>
+                  <span className="text-[9px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-xs bg-white/[0.04] text-emerald-400 border border-emerald-500/20">
+                    READINESS {sample.readinessScore}/100
+                  </span>
+                </div>
+
+                <h3 className="text-base font-bold text-white group-hover:text-[#FF6A00] transition-colors font-sans">
+                  {sample.name}
+                </h3>
+
+                <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed font-sans">
+                  {sample.tagline}
+                </p>
+
+                <div className="mt-3 p-2.5 rounded-xs bg-[#141414] border border-white/[0.04] text-[11px] text-zinc-400 line-clamp-2">
+                  <strong className="text-zinc-300 font-mono">Problem:</strong> {sample.project.problemStatement}
+                </div>
+              </div>
+
+              <div className="pt-4 mt-2 flex items-center justify-between border-t border-white/[0.04]">
+                <span className="text-[10px] font-mono text-zinc-500">
+                  10 SLIDES • SCRIPT • DEFENSE
+                </span>
+
+                <button
+                  onClick={() => {
+                    if (onSelectSampleIdea) {
+                      onSelectSampleIdea(sample);
+                    } else {
+                      onSeeDemo();
+                    }
+                  }}
+                  className="px-3 py-1.5 rounded-xs text-[11px] font-mono font-bold text-white bg-[#1A1A1A] hover:bg-[#FF4D00] hover:text-black border border-white/[0.1] hover:border-[#FF4D00] flex items-center space-x-1.5 transition-all"
+                >
+                  <Zap className="w-3 h-3 text-[#FF6A00] group-hover:text-black" />
+                  <span>Launch Demo</span>
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Editorial Orchestration Pipeline */}
-      <div className="mt-24 pt-12 border-t border-white/[0.06]">
+      <div className="mt-20 pt-10 border-t border-white/[0.06]">
         <div className="flex items-baseline justify-between mb-8">
           <div>
             <h2 className="text-xs font-mono font-bold tracking-widest text-[#FF4D00] uppercase">

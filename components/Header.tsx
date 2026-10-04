@@ -9,8 +9,10 @@ import {
   ExternalLink,
   Zap,
   Play,
-  Share2
+  Share2,
+  ChevronDown
 } from 'lucide-react';
+import { ALL_SAMPLE_IDEAS, SampleIdea } from '@/data/sampleProjects';
 import { Project, PitchAnalysis, PitchDeck } from '@/types';
 
 interface HeaderProps {
@@ -21,6 +23,7 @@ interface HeaderProps {
   setActiveTab: (tab: string) => void;
   onOpenNewProject: () => void;
   onLoadDemo: () => void;
+  onSelectSampleIdea?: (sample: SampleIdea) => void;
   onExportAll: () => void;
   onSendToMiro?: () => void;
   isAnalyzing?: boolean;
@@ -34,12 +37,25 @@ export function Header({
   setActiveTab,
   onOpenNewProject,
   onLoadDemo,
+  onSelectSampleIdea,
   onExportAll,
   onSendToMiro,
   isAnalyzing,
 }: HeaderProps) {
   const readiness = analysis?.pitchReadinessScore ?? 0;
   const [isMiroConnected, setIsMiroConnected] = React.useState<boolean | null>(null);
+  const [isDemoDropdownOpen, setIsDemoDropdownOpen] = React.useState(false);
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDemoDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   React.useEffect(() => {
     fetch('/api/miro/status')
@@ -136,14 +152,69 @@ export function Header({
           )
         )}
 
-        <button
-          onClick={onLoadDemo}
-          className="text-xs font-mono font-medium text-zinc-400 hover:text-white bg-[#121212] hover:bg-[#181818] border border-white/[0.08] px-3 py-1.5 rounded-sm flex items-center space-x-1.5 transition-all"
-          title="Instant 1-Click Demo Pitch Package"
-        >
-          <Play className="w-3 h-3 text-[#FF6A00] fill-[#FF6A00]" />
-          <span className="hidden sm:inline">DEMO</span>
-        </button>
+        {/* Instant Demo Selector with Dropdown */}
+        <div className="relative" ref={dropdownRef}>
+          <div className="flex items-center rounded-sm border border-white/[0.08] bg-[#121212] overflow-hidden">
+            <button
+              onClick={onLoadDemo}
+              className="text-xs font-mono font-medium text-zinc-300 hover:text-white px-2.5 py-1.5 flex items-center space-x-1.5 hover:bg-[#181818] transition-all"
+              title="Instant 1-Click Demo Pitch Package"
+            >
+              <Play className="w-3 h-3 text-[#FF6A00] fill-[#FF6A00]" />
+              <span className="hidden sm:inline">DEMOS</span>
+            </button>
+            <button
+              onClick={() => setIsDemoDropdownOpen(!isDemoDropdownOpen)}
+              className="px-1.5 py-1.5 border-l border-white/[0.08] text-zinc-400 hover:text-white hover:bg-[#181818] transition-all"
+              title="Select Sample Pitch Demo"
+            >
+              <ChevronDown className="w-3 h-3" />
+            </button>
+          </div>
+
+          {/* Dropdown Menu */}
+          {isDemoDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-72 bg-[#121212] border border-white/[0.12] rounded-xs shadow-2xl p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+              <div className="px-2 py-1.5 border-b border-white/[0.06] mb-1.5 flex items-center justify-between">
+                <span className="text-[10px] font-mono font-bold tracking-wider text-[#FF6A00] uppercase">
+                  DEMO PITCH PACKAGES
+                </span>
+                <span className="text-[9px] font-mono text-zinc-500">{ALL_SAMPLE_IDEAS.length} READY</span>
+              </div>
+              <div className="space-y-1 max-h-80 overflow-y-auto">
+                {ALL_SAMPLE_IDEAS.map((sample) => (
+                  <button
+                    key={sample.id}
+                    onClick={() => {
+                      setIsDemoDropdownOpen(false);
+                      if (onSelectSampleIdea) {
+                        onSelectSampleIdea(sample);
+                      } else {
+                        onLoadDemo();
+                      }
+                    }}
+                    className="w-full text-left p-2 rounded-xs hover:bg-[#1C1C1C] border border-transparent hover:border-white/[0.06] transition-all group"
+                  >
+                    <div className="flex items-center justify-between mb-0.5">
+                      <span className="text-[9px] font-mono font-bold text-[#FF6A00] uppercase truncate">
+                        {sample.category}
+                      </span>
+                      <span className="text-[9px] font-mono text-emerald-400 bg-emerald-950/30 px-1 py-0.2 rounded border border-emerald-500/20">
+                        {sample.readinessScore}/100
+                      </span>
+                    </div>
+                    <div className="text-xs font-bold text-white group-hover:text-[#FF6A00] transition-colors truncate">
+                      {sample.name}
+                    </div>
+                    <p className="text-[10px] text-zinc-400 truncate mt-0.5">
+                      {sample.tagline}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
 
         <button
           onClick={onOpenNewProject}
