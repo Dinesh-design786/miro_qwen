@@ -16,7 +16,8 @@ import {
   ExternalLink,
   ChevronRight,
   TrendingUp,
-  Award
+  Award,
+  Layers
 } from 'lucide-react';
 import { 
   PitchDeck, 
@@ -39,6 +40,7 @@ interface FinalPackageViewProps {
   analysis?: PitchAnalysis | null;
   onNavigateTab: (tab: string) => void;
   onPrepareForPitch: () => void;
+  onSendToMiro?: () => void;
 }
 
 export function FinalPackageView({
@@ -49,12 +51,23 @@ export function FinalPackageView({
   analysis,
   onNavigateTab,
   onPrepareForPitch,
+  onSendToMiro,
 }: FinalPackageViewProps) {
   const [isDownloadingBundle, setIsDownloadingBundle] = useState(false);
 
   const readinessScore = Math.max(91, (analysis?.pitchReadinessScore || 70) + 18);
 
   const assets = [
+    {
+      id: 'miro-workspace',
+      name: 'Miro Board Pitch Workspace',
+      desc: 'Dedicated 🚀 PitchForge AI Pitch frame with sticky notes, architecture & Q&A',
+      icon: Layers,
+      color: 'text-amber-400',
+      tab: 'miro',
+      status: 'Ready to Sync',
+      isMiroAction: true,
+    },
     {
       id: 'presentation',
       name: 'Pitch Deck (PPTX)',
@@ -215,18 +228,29 @@ export function FinalPackageView({
 
       {/* Package Assets Checklist Grid */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between text-xs pb-2 border-b border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs pb-2 border-b border-slate-800 gap-2">
           <span className="font-bold text-white uppercase tracking-wider">
             Generated Pitch Assets
           </span>
-          <button
-            onClick={handleDownloadCompleteBundle}
-            disabled={isDownloadingBundle}
-            className="text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 px-3.5 py-1.5 rounded-lg flex items-center space-x-1.5 shadow-md shadow-indigo-600/30 transition-all disabled:opacity-50"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>{isDownloadingBundle ? 'Exporting Bundle...' : 'Download Complete Bundle (PPTX + MD)'}</span>
-          </button>
+          <div className="flex items-center space-x-2">
+            {onSendToMiro && (
+              <button
+                onClick={onSendToMiro}
+                className="text-xs font-bold text-slate-950 bg-[#FFD02F] hover:bg-[#F2C425] px-3.5 py-1.5 rounded-lg flex items-center space-x-1.5 shadow-md shadow-amber-500/20 transition-all hover:scale-[1.02]"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-950" />
+                <span>Send Pitch to Miro</span>
+              </button>
+            )}
+            <button
+              onClick={handleDownloadCompleteBundle}
+              disabled={isDownloadingBundle}
+              className="text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 px-3.5 py-1.5 rounded-lg flex items-center space-x-1.5 shadow-md shadow-indigo-600/30 transition-all disabled:opacity-50"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>{isDownloadingBundle ? 'Exporting Bundle...' : 'Download Complete Bundle (PPTX + MD)'}</span>
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

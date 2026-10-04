@@ -23,6 +23,7 @@ interface HeaderProps {
   onOpenNewProject: () => void;
   onLoadDemo: () => void;
   onExportAll: () => void;
+  onSendToMiro?: () => void;
   isAnalyzing?: boolean;
 }
 
@@ -35,6 +36,7 @@ export function Header({
   onOpenNewProject,
   onLoadDemo,
   onExportAll,
+  onSendToMiro,
   isAnalyzing,
 }: HeaderProps) {
   const readiness = analysis?.pitchReadinessScore ?? 0;
@@ -138,6 +140,18 @@ export function Header({
           <span className="hidden sm:inline">New Project</span>
           <span className="sm:hidden">New</span>
         </button>
+
+        {analysis && onSendToMiro && (
+          <button
+            onClick={onSendToMiro}
+            className="text-xs font-bold text-slate-950 bg-[#FFD02F] hover:bg-[#F2C425] px-3.5 py-1.5 rounded-lg flex items-center space-x-1.5 shadow-md shadow-amber-500/20 transition-all hover:scale-[1.02]"
+            title="Create real structured pitch workspace on Miro board"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-slate-950" />
+            <span className="hidden sm:inline">Send Pitch to Miro</span>
+            <span className="sm:hidden">To Miro</span>
+          </button>
+        )}
 
         {deck && (
           <button

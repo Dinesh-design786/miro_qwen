@@ -23,6 +23,7 @@ interface PresentationViewerProps {
   onUpdateSlide: (updatedSlide: Slide) => void;
   onRegenerateEntirePitch: () => void;
   onNavigateToScript: () => void;
+  onSendToMiro?: () => void;
 }
 
 export function PresentationViewer({
@@ -30,6 +31,7 @@ export function PresentationViewer({
   onUpdateSlide,
   onRegenerateEntirePitch,
   onNavigateToScript,
+  onSendToMiro,
 }: PresentationViewerProps) {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
@@ -100,6 +102,16 @@ export function PresentationViewer({
         </div>
 
         <div className="flex items-center space-x-2.5 shrink-0 flex-wrap gap-2">
+          {onSendToMiro && (
+            <button
+              onClick={onSendToMiro}
+              className="px-3.5 py-2 rounded-lg text-xs font-bold text-slate-950 bg-[#FFD02F] hover:bg-[#F2C425] shadow-md shadow-amber-500/20 flex items-center space-x-1.5 transition-all hover:scale-[1.02]"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-950" />
+              <span>Send Pitch to Miro</span>
+            </button>
+          )}
+
           <button
             onClick={onNavigateToScript}
             className="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center space-x-1.5 transition-colors"

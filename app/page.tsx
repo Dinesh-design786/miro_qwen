@@ -17,6 +17,7 @@ import { VideoTimelineView } from '@/components/VideoTimelineView';
 import { JudgeModeView } from '@/components/JudgeModeView';
 import { ExecutiveSummaryView } from '@/components/ExecutiveSummaryView';
 import { FinalPackageView } from '@/components/FinalPackageView';
+import { MiroExportModal } from '@/components/MiroExportModal';
 
 import { 
   Project, 
@@ -56,6 +57,7 @@ export default function Home() {
 
   const [activeTab, setActiveTab] = useState<string>('overview');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMiroModalOpen, setIsMiroModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingStepText, setLoadingStepText] = useState('');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -64,6 +66,20 @@ export default function Home() {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
   };
+
+  // Check URL parameters for Miro OAuth redirect callbacks
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('miro_connected') === 'true') {
+        showToast('✓ Successfully connected to Miro account via OAuth!');
+        window.history.replaceState({}, '', window.location.pathname);
+      } else if (params.get('miro_error')) {
+        showToast(`Miro Connection Notice: ${params.get('miro_error')}`);
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    }
+  }, []);
 
   // Instant 1-Click Demo Loader
   const handleLoadDemo = () => {
@@ -301,6 +317,7 @@ export default function Home() {
         onOpenNewProject={() => setIsModalOpen(true)}
         onLoadDemo={handleLoadDemo}
         onExportAll={handleGlobalExport}
+        onSendToMiro={() => setIsMiroModalOpen(true)}
         isAnalyzing={isLoading}
       />
 
@@ -351,6 +368,7 @@ export default function Home() {
                 onAttackMode={() => setActiveTab('attack')}
                 onImprovePitch={() => setActiveTab('improve')}
                 onGeneratePitch={() => setActiveTab('presentation')}
+                onSendToMiro={() => setIsMiroModalOpen(true)}
               />
             )}
 
@@ -379,6 +397,7 @@ export default function Home() {
                 onUpdateSlide={handleUpdateSlide}
                 onRegenerateEntirePitch={() => handleCreateProject(project)}
                 onNavigateToScript={() => setActiveTab('script')}
+                onSendToMiro={() => setIsMiroModalOpen(true)}
               />
             )}
 
@@ -419,6 +438,7 @@ export default function Home() {
                 analysis={analysis}
                 onNavigateTab={setActiveTab}
                 onPrepareForPitch={() => setActiveTab('presentation')}
+                onSendToMiro={() => setIsMiroModalOpen(true)}
               />
             )}
           </div>
@@ -434,6 +454,21 @@ export default function Home() {
         isLoading={isLoading}
         loadingStepText={loadingStepText}
       />
+
+      {/* Real Miro Write-Back Modal */}
+      {project && analysis && deck && summary && attackReport && (
+        <MiroExportModal
+          isOpen={isMiroModalOpen}
+          onClose={() => setIsMiroModalOpen(false)}
+          project={project}
+          analysis={analysis}
+          deck={deck}
+          attackReport={attackReport}
+          judgeQuestions={judgeQuestions}
+          summary={summary}
+          onNavigateTab={setActiveTab}
+        />
+      )}
 
       {/* Footer */}
       <footer className="border-t border-slate-900 bg-[#060910] py-6 px-4 text-center text-xs text-slate-500">
